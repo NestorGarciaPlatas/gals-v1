@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-//prueba de que el guardado funciona
+//prueba de que el guardado funciona acabndo de comprobar cosas
 //const Note = require('../models/Book');
 const { isAuthenticated } = require('../helpers/auth');
 const User = require('../models/User');
