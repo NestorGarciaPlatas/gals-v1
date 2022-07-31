@@ -9,6 +9,7 @@ const UserSchema = new Schema({
    role:{type:String , required: true},
    course:{type:String , required: true},
    penalty:{type: Number },
+   car:[String],
    date:{ type: Date, default: Date.now} 
 });
 

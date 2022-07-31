@@ -80,6 +80,38 @@ router.get('/books', isAuthenticated, async (req, res) => {
 
 });
 
+router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
+    const book = await Book.findById(req.params.id).lean();
+    const demand= book.demand +1;
+    const errors = [];
+    const car =[book.isbn];    
+    const usuario= await User.findById(req.user.id);
+    const isbnCar= usuario.car.includes(book.isbn);
+    //console.log(isbnCar);
+    if(isbnCar){
+        errors.push({ text: 'No puedes agregar mas de 1 libro' });
+        const books = await Book.find().sort({ date: 'desc' }).lean();
+        res.render('books/the-books',{errors,books});
+    }else{
+        const car2=usuario.car;
+        car.push.apply(car,car2);
+        await Book.findByIdAndUpdate(req.params.id, {  demand });    
+        await User.findByIdAndUpdate(req.user.id,{car});
+        req.flash('success_msg', 'Book added satisfactoriamente');
+        res.redirect('/books')
+    }
+    
+    
+    //console.log(car);
+    //console.log('carrito');
+    
+    //console.log(car.push.apply(car,car2));
+    //console.log(car);
+    //let car = usuario.car.push(carrito);
+    
+    
+});
+
 router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
     res.render('books/edit-book', { book });
