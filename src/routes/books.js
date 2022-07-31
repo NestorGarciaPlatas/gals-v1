@@ -55,16 +55,18 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
 router.post('/books/search', isAuthenticated, async (req, res) => {
 
     const { search } = req.body;
-    const books = await Book.find({isbn: search}).sort({ date: 'desc' }).lean();
-    if (req.user.role == 'admin') {
-        console.log(books);    
-        res.render('books/all-books',{books});
-    } else {
-        console.log(books);    
-        res.render('books/the-books',{books});
+    var books = await Book.find({isbn: search}).sort({ date: 'desc' }).lean();
+    const errors = [];
+    const x=books.length;    
+    if(books.length==0){
+        errors.push({ text: 'There is no ISBN like the one you have typed in the database, type it all in or check if you have typed it correctly.' });
+        books = await Book.find().sort({ date: 'desc' }).lean();
     }
-
-
+    if (req.user.role == 'admin') {            
+        res.render('books/all-books',{errors, books});
+    } else {           
+        res.render('books/the-books',{errors, books});
+    }
 });
 
 
@@ -76,8 +78,6 @@ router.get('/books', isAuthenticated, async (req, res) => {
         const books = await Book.find().sort({ date: 'desc' }).lean();
         res.render('books/the-books', { books });
     }
-
-
 });
 
 router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
@@ -100,15 +100,6 @@ router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
         req.flash('success_msg', 'Book added satisfactoriamente');
         res.redirect('/books')
     }
-    
-    
-    //console.log(car);
-    //console.log('carrito');
-    
-    //console.log(car.push.apply(car,car2));
-    //console.log(car);
-    //let car = usuario.car.push(carrito);
-    
     
 });
 
