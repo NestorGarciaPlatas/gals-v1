@@ -80,6 +80,29 @@ router.get('/books', isAuthenticated, async (req, res) => {
     }
 });
 
+router.put('/books/donation/:id', isAuthenticated, async (req, res) => {
+    const book = await Book.findById(req.params.id).lean();
+    const stock= book.stock +1;
+    const errors = [];
+    const donation =[book.isbn];    
+    const usuario= await User.findById(req.user.id);
+    const isbnDonation= usuario.donation.includes(book.isbn);
+    //console.log(isbnCar);
+    if(isbnDonation){
+        errors.push({ text: 'No puedes donar el mismo libro 2 veces' });
+        const books = await Book.find().sort({ date: 'desc' }).lean();
+        res.render('books/the-books',{errors,books});
+    }else{
+        const donation2=usuario.donation;
+        donation.push.apply(donation,donation2);
+        await Book.findByIdAndUpdate(req.params.id, {  stock });    
+        await User.findByIdAndUpdate(req.user.id,{donation});
+        req.flash('success_msg', 'Book donated satisfactoriamente');
+        res.redirect('/books')
+    }
+    
+});
+
 router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
     const demand= book.demand +1;
