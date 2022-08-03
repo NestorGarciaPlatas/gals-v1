@@ -55,7 +55,7 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
 router.post('/books/search', isAuthenticated, async (req, res) => {
 
     const { search } = req.body;
-    var books = await Book.find({isbn: search}).sort({ date: 'desc' }).lean();
+    var books = await Book.find({isbn: search}).sort({ date: 'desc' }).lean();    
     const errors = [];
     const x=books.length;    
     if(books.length==0){
@@ -124,6 +124,62 @@ router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
         res.redirect('/books')
     }
     
+});
+
+router.put('/books/shopdelete/:id', isAuthenticated, async (req, res) => {
+    const book = await Book.findById(req.params.id).lean();
+    const demand= book.demand-1;    
+    var car = [];
+    var car2 = req.user.car;            
+    await Book.findByIdAndUpdate(req.params.id, {  demand });
+    //eliminar el isbn de car        
+    car2.forEach(async function(car2) {            
+        if(car2 != book.isbn){                
+            car.push(car2);
+        }            
+    });        
+    await User.findByIdAndUpdate(req.user.id,{car});
+    req.flash('success_msg', 'Book delited satisfactoriamente');
+    res.redirect('/books/shoppingcar');    
+});
+
+router.put('/books/donationdelete/:id', isAuthenticated, async (req, res) => {
+    const book = await Book.findById(req.params.id).lean();
+    const stock= book.stock-1;    
+    var donation = [];
+    var donation2 = req.user.donation;            
+    await Book.findByIdAndUpdate(req.params.id, {  stock });
+    //eliminar el isbn de donation        
+    donation2.forEach(async function(donation2) {            
+        if(donation2 != book.isbn){                
+            donation.push(donation2);
+        }            
+    });        
+    await User.findByIdAndUpdate(req.user.id,{donation});
+    req.flash('success_msg', 'Book delited satisfactoriamente');
+    res.redirect('/books/mydonation');    
+});
+
+router.get('/books/shoppingcar', isAuthenticated,async (req, res) => {
+    const car = req.user.car;    
+    var books = [];
+    var libro =[];
+    car.forEach(async function(car) {        
+        libro = await Book.find({isbn: car}).sort({ date: 'desc' }).lean();
+        books.push.apply(books, libro);
+    });
+    res.render('books/shop-books',{books});    
+});
+
+router.get('/books/mydonation', isAuthenticated,async (req, res) => {
+    const donation = req.user.donation;    
+    var books = [];
+    var libro =[];
+    donation.forEach(async function(donation) {        
+        libro = await Book.find({isbn: donation}).sort({ date: 'desc' }).lean();
+        books.push.apply(books, libro);
+    });
+    res.render('books/donation-books',{books});    
 });
 
 router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
