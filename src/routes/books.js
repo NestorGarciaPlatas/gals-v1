@@ -82,19 +82,28 @@ router.get('/books', isAuthenticated, async (req, res) => {
 
 router.put('/books/donation/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
+    const {nota}=req.body;
     const stock= book.stock +1;
     const errors = [];
-    const donation =[book.isbn];    
+    const donation =[{
+        isbn: book.isbn,
+        nota: nota,        
+    }]; 
+    var isbnDonation = false;
     const usuario= await User.findById(req.user.id);
-    const isbnDonation= usuario.donation.includes(book.isbn);
-    //console.log(isbnCar);
+    const don = usuario.donation;
+    don.forEach(function(don){        
+        if(book.isbn==don.isbn){            
+            isbnDonation=true;
+        }
+    });    
     if(isbnDonation){
         errors.push({ text: 'No puedes donar el mismo libro 2 veces' });
         const books = await Book.find().sort({ date: 'desc' }).lean();
         res.render('books/the-books',{errors,books});
     }else{
-        const donation2=usuario.donation;
-        donation.push.apply(donation,donation2);
+        const donation2=usuario.donation;        
+        donation.push.apply(donation,donation2);        
         await Book.findByIdAndUpdate(req.params.id, {  stock });    
         await User.findByIdAndUpdate(req.user.id,{donation});
         req.flash('success_msg', 'Book donated satisfactoriamente');
@@ -146,15 +155,15 @@ router.put('/books/shopdelete/:id', isAuthenticated, async (req, res) => {
 router.put('/books/donationdelete/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
     const stock= book.stock-1;    
-    var donation = [];
-    var donation2 = req.user.donation;            
+    var donation = [];    
+    var donation2 = req.user.donation;           
     await Book.findByIdAndUpdate(req.params.id, {  stock });
     //eliminar el isbn de donation        
     donation2.forEach(async function(donation2) {            
-        if(donation2 != book.isbn){                
+        if(donation2.isbn != book.isbn){                
             donation.push(donation2);
         }            
-    });        
+    });                
     await User.findByIdAndUpdate(req.user.id,{donation});
     req.flash('success_msg', 'Book delited satisfactoriamente');
     res.redirect('/books/mydonation');    
@@ -172,11 +181,11 @@ router.get('/books/shoppingcar', isAuthenticated,async (req, res) => {
 });
 
 router.get('/books/mydonation', isAuthenticated,async (req, res) => {
-    const donation = req.user.donation;    
+    const donation = req.user.donation;      
     var books = [];
-    var libro =[];
+    var libro =[];    
     donation.forEach(async function(donation) {        
-        libro = await Book.find({isbn: donation}).sort({ date: 'desc' }).lean();
+        libro = await Book.find({isbn: donation.isbn}).sort({ date: 'desc' }).lean();
         books.push.apply(books, libro);
     });
     res.render('books/donation-books',{books});    

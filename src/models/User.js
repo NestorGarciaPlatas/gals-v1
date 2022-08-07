@@ -10,7 +10,11 @@ const UserSchema = new Schema({
    course:{type:String , required: true},
    penalty:{type: Number },
    car:[String],
-   donation:[String],
+   //donation:[String],
+   donation:[{
+        isbn:{type:String},
+        nota:{type:String}
+   }],
    date:{ type: Date, default: Date.now} 
 });
 

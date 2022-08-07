@@ -1,4 +1,5 @@
 <div class="row">
+    <h1>All Books</h1> 
     {{#each books}}
         <div class="col-md-3 p-2">
             <div class="card">
@@ -16,18 +17,47 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
                                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
                                 </svg>
-                                Add
+                                Order
                             </button>
                         </form>
-                        <form action="/books/donation/{{_id}}?_method=PUT" method="POST" style="display:inline">
-                            <input type="hidden" name="_method" value="PUT">
+                        <!--<form action="/books/donation/{{_id}}?_method=PUT" method="POST" style="display:inline">
+                            <input type="hidden" name="_method" value="PUT">                            
                             <button type="submit" class="btn btn-success" >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
                                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
                                 </svg>
                                 Donation
                             </button>
+                        </form>-->
+                        <form action="/books/donation/{{_id}}?_method=PUT" method="POST" style="display:inline">
+                            <input type="hidden" name="_method" value="PUT">
+                            <style> 
+                                input[type=submit]{
+                                background-color: #04a369;
+                                border: none;
+                                border-radius: 5px;
+                                color: rgb(255, 255, 255);
+                                padding: 5px 10px;
+                                text-decoration: none;
+                                margin: 1px 1px;
+                                cursor: pointer;
+                                }
+                            </style>
+                            <p>What is the condition of the book you are going to donate?
+                            <div class="btn-group" role="group" aria-label="Basic example">                                
+                                <input type="submit" name="nota" value="A">                                
+                                <input type="submit"  name="nota" value="B">                                
+                                <input type="submit" name="nota" value="C">
+                                <input type="submit" name="nota" value="F"> 
+                                
+                            </div>
+                            <button type="button" class="btn  btn-warning btn-sm" data-bs-toggle="popover" title="Classification" data-bs-content="'A' means a perfect state.
+                                    'B' the exercises of the book are not solved, some wrinkled pages, but in general good condition.
+                                    'C' the exercises in the book are solved in pencil and although they have tried to erase they can be seen, there are drawings in ballpoint pen.
+                                    'F' drawn, with the exercises solved, wrinkled pages.">Info</button>
+                            </p>
                         </form>
+                        
                     </p>        
                 </div>
             </div>
