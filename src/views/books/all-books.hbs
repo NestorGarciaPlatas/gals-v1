@@ -1,4 +1,15 @@
-<div class="row">
+<h1>Admin All Books</h1>     
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Admin options
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/books">All Books</a></li>
+    <li><a class="dropdown-item" href="/users">All Users</a></li>    
+    <li><a class="dropdown-item" href="/books/add">New Book</a></li>
+  </ul>
+</div>
+<div class="row">    
     {{#each books}}
         <div class="col-md-3 p-2">
             <div class="card">

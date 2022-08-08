@@ -72,6 +72,12 @@ router.get('/users', isAuthenticated, async (req,res)=>{
     
 });
 
+router.delete('/users/delete/:id', isAuthenticated, async (req, res) => {
+    await User.findByIdAndDelete(req.params.id);
+    req.flash('success_msg', 'User delited satisfactoriamente');
+    res.redirect('/users');
+});
+
 router.get('/users/logout', (req, res) =>{
     req.logout();
     res.redirect('/');
