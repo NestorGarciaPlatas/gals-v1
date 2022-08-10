@@ -70,14 +70,20 @@ router.post('/books/search', isAuthenticated, async (req, res) => {
 });
 
 
-router.get('/books', isAuthenticated, async (req, res) => {
+router.get('/books', isAuthenticated, async (req, res) => {    
     if (req.user.role == 'admin') {
         const books = await Book.find().sort({ date: 'desc' }).lean();
         res.render('books/all-books', { books });
     } else {
         const books = await Book.find().sort({ date: 'desc' }).lean();
-        res.render('books/the-books', { books });
+        res.render('books/the-books-order', { books });       
     }
+});
+
+router.get('/books/donation', isAuthenticated, async (req, res) => {   
+    const books = await Book.find().sort({ date: 'desc' }).lean();
+    res.render('books/the-books-donation', { books });       
+    
 });
 
 router.put('/books/donation/:id', isAuthenticated, async (req, res) => {
@@ -100,19 +106,19 @@ router.put('/books/donation/:id', isAuthenticated, async (req, res) => {
     if(isbnDonation){
         errors.push({ text: 'No puedes donar el mismo libro 2 veces' });
         const books = await Book.find().sort({ date: 'desc' }).lean();
-        res.render('books/the-books',{errors,books});
+        res.render('books/the-books-donation',{errors,books});
     }else{
         const donation2=usuario.donation;        
         donation.push.apply(donation,donation2);        
         await Book.findByIdAndUpdate(req.params.id, {  stock });    
         await User.findByIdAndUpdate(req.user.id,{donation});
         req.flash('success_msg', 'Book donated satisfactoriamente');
-        res.redirect('/books')
+        res.redirect('/books/donation')
     }
     
 });
 
-router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
+router.put('/books/order/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
     const demand= book.demand +1;
     const errors = [];
@@ -123,7 +129,7 @@ router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
     if(isbnCar){
         errors.push({ text: 'No puedes agregar mas de 1 libro' });
         const books = await Book.find().sort({ date: 'desc' }).lean();
-        res.render('books/the-books',{errors,books});
+        res.render('books/the-books-order',{errors,books});
     }else{
         const car2=usuario.car;
         car.push.apply(car,car2);
@@ -135,7 +141,7 @@ router.put('/books/shop/:id', isAuthenticated, async (req, res) => {
     
 });
 
-router.put('/books/shopdelete/:id', isAuthenticated, async (req, res) => {
+router.put('/books/orderdelete/:id', isAuthenticated, async (req, res) => {
     const book = await Book.findById(req.params.id).lean();
     const demand= book.demand-1;    
     var car = [];
@@ -149,7 +155,7 @@ router.put('/books/shopdelete/:id', isAuthenticated, async (req, res) => {
     });        
     await User.findByIdAndUpdate(req.user.id,{car});
     req.flash('success_msg', 'Book delited satisfactoriamente');
-    res.redirect('/books/shoppingcar');    
+    res.redirect('/books/ordercar');    
 });
 
 router.put('/books/donationdelete/:id', isAuthenticated, async (req, res) => {
@@ -169,7 +175,7 @@ router.put('/books/donationdelete/:id', isAuthenticated, async (req, res) => {
     res.redirect('/books/mydonation');    
 });
 
-router.get('/books/shoppingcar', isAuthenticated,async (req, res) => {
+router.get('/books/ordercar', isAuthenticated,async (req, res) => {
     const car = req.user.car;    
     var books = [];
     var libro =[];
@@ -177,7 +183,7 @@ router.get('/books/shoppingcar', isAuthenticated,async (req, res) => {
         libro = await Book.find({isbn: car}).sort({ date: 'desc' }).lean();
         books.push.apply(books, libro);
     });
-    res.render('books/shop-books',{books});    
+    res.render('books/order-books',{books});    
 });
 
 router.get('/books/mydonation', isAuthenticated,async (req, res) => {

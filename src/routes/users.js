@@ -67,9 +67,19 @@ router.get('/users', isAuthenticated, async (req,res)=>{
     }else{        
         const notes = await Note.find({user: req.user.id}).sort({date: 'desc'}).lean();
         res.render('notes/all-notes', { notes});
-    }
-    
-    
+    }    
+});
+
+router.get('/users/edit/:id', isAuthenticated, async (req, res) => {
+    const user = await User.findById(req.params.id).lean();
+    res.render('users/edit-user', { user });
+});
+
+router.put('/users/edit-user/:id', isAuthenticated, async (req, res) => {
+    const { name, email, role, course } = req.body;
+    await User.findByIdAndUpdate(req.params.id, { name, email, role, course});
+    req.flash('success_msg', 'User actualizada satisfactoriamente');
+    res.redirect('/users')
 });
 
 router.delete('/users/delete/:id', isAuthenticated, async (req, res) => {
