@@ -65,23 +65,23 @@ router.post('/books/search', isAuthenticated, async (req, res) => {
     if (req.user.role == 'admin') {            
         res.render('books/all-books',{errors, books});
     } else {           
-        res.render('books/the-books',{errors, books});
+        res.render('books/the-books-order',{errors, books});
     }
 });
 
 
 router.get('/books', isAuthenticated, async (req, res) => {    
     if (req.user.role == 'admin') {
-        const books = await Book.find().sort({ date: 'desc' }).lean();
+        const books = await Book.find().sort({ course: 'desc' }).lean();
         res.render('books/all-books', { books });
     } else {
-        const books = await Book.find().sort({ date: 'desc' }).lean();
+        const books = await Book.find({course:req.user.course}).sort({ date: 'desc' }).lean();
         res.render('books/the-books-order', { books });       
     }
 });
 
 router.get('/books/donation', isAuthenticated, async (req, res) => {   
-    const books = await Book.find().sort({ date: 'desc' }).lean();
+    const books = await Book.find().sort({ course: 'desc' }).lean();
     res.render('books/the-books-donation', { books });       
     
 });
@@ -126,9 +126,14 @@ router.put('/books/order/:id', isAuthenticated, async (req, res) => {
     const usuario= await User.findById(req.user.id);
     const isbnCar= usuario.car.includes(book.isbn);
     //console.log(isbnCar);
+    if(book.course!=req.user.course){
+        errors.push({ text: 'No puedes agregar este libro ya que etsas en otro curso' });
+    }
     if(isbnCar){
         errors.push({ text: 'No puedes agregar mas de 1 libro' });
-        const books = await Book.find().sort({ date: 'desc' }).lean();
+    }
+    if(errors.length > 0){
+        const books = await Book.find({course:req.user.course}).sort({ date: 'desc' }).lean();
         res.render('books/the-books-order',{errors,books});
     }else{
         const car2=usuario.car;

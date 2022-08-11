@@ -60,24 +60,36 @@ router.post('/users/signup', async (req,res)=>{
     
 });
 
-router.get('/users', isAuthenticated, async (req,res)=>{    
+router.get('/users', isAuthenticated, async (req,res)=>{
+       
     if(req.user.role == 'admin'){        
         const users = await User.find().sort({date: 'desc'}).lean();        
         res.render('users/all-users', { users});
     }else{        
-        const notes = await Note.find({user: req.user.id}).sort({date: 'desc'}).lean();
-        res.render('notes/all-notes', { notes});
+        const user = await User.findById(req.user.id);                
+        res.render('users/profile', { user});
     }    
 });
 
 router.get('/users/edit/:id', isAuthenticated, async (req, res) => {
     const user = await User.findById(req.params.id).lean();
-    res.render('users/edit-user', { user });
+    if(req.user.role == 'admin'){        
+        res.render('users/edit-user', { user });
+    }else{
+        res.render('users/edit-profile', { user });
+    }
 });
 
 router.put('/users/edit-user/:id', isAuthenticated, async (req, res) => {
     const { name, email, role, course } = req.body;
     await User.findByIdAndUpdate(req.params.id, { name, email, role, course});
+    req.flash('success_msg', 'User actualizada satisfactoriamente');
+    res.redirect('/users')
+});
+
+router.put('/users/edit-profile/:id', isAuthenticated, async (req, res) => {
+    const { name, course } = req.body;
+    await User.findByIdAndUpdate(req.params.id, { name, course});
     req.flash('success_msg', 'User actualizada satisfactoriamente');
     res.redirect('/users')
 });
