@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const {unlink} = require('fs-extra');
+
 //prueba de que el guardado funciona acabndo de comprobar cosas
 //const Note = require('../models/Book');
 const { isAuthenticated } = require('../helpers/auth');
@@ -18,13 +21,17 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     if (req.user.role != 'admin') {
         res.redirect('/notes');
     }
-    const { title, isbn, stock, course, demand } = req.body;
+    const { title, isbn, stock, course, demand, editorial } = req.body;
+    const {filename, originalname, size, mimetype} = req.file;
     const errors = [];
     if (!title) {
         errors.push({ text: 'Please Write a Title' });
     }
     if (!isbn) {
-        errors.push({ text: 'Please write a Isbn' });
+        errors.push({ text: 'Please write an Isbn' });
+    }
+    if (!editorial) {
+        errors.push({ text: 'Please write an Editorial' });
     }
     if (!stock) {
         errors.push({ text: 'Please write the Stock available' });
@@ -35,16 +42,19 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     if (!demand) {
         errors.push({ text: 'Please write the demand in case you do not know write 0' });
     }
+    //console.log(req.file);
     if (errors.length > 0) {
         res.render('books/new-book', {
             errors,
             title,
             isbn,
             stock,
-            demand
+            demand,
+            editorial
         });
     } else {
-        const newBook = new Book({ title, isbn, stock, course, demand });
+        const path = '/img/uploads/'+ filename;
+        const newBook = new Book({ title, isbn, stock, course, demand, editorial, filename, path, originalname, size, mimetype });
         await newBook.save();
         req.flash('success_msg', 'Book agregada successfully');
         res.redirect('/books');
@@ -208,14 +218,15 @@ router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
 });
 
 router.put('/books/edit-book/:id', isAuthenticated, async (req, res) => {
-    const { title, isbn, stock, course, demand } = req.body;
-    await Book.findByIdAndUpdate(req.params.id, { title, isbn, stock, course, demand });
+    const { title, isbn, stock, course, demand, editorial } = req.body;
+    await Book.findByIdAndUpdate(req.params.id, { title, isbn, stock, course, demand, editorial });
     req.flash('success_msg', 'Book actualizada satisfactoriamente');
     res.redirect('/books')
 });
 
 router.delete('/books/delete/:id', isAuthenticated, async (req, res) => {
-    await Book.findByIdAndDelete(req.params.id);
+    const image = await Book.findByIdAndDelete(req.params.id);
+    await unlink(path.resolve('./src/public'+image.path));
     req.flash('success_msg', 'Book delited satisfactoriamente');
     res.redirect('/books');
 });

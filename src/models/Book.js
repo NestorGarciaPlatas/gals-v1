@@ -7,6 +7,12 @@ const BookSchema = new Schema({
    stock:{type: Number, required: true},
    course:{type:String , required: true},
    demand:{type: Number, required: true},
+   editorial:{type: String, requiere: true},
+   filename: {type: String},
+   path:{type: String},
+   originalname:{type: String},
+   mimetype:{type: String},
+   size:{type: Number},
    date:{ type: Date, default: Date.now} 
    
 });

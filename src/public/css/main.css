@@ -6,3 +6,8 @@ body{
 .logo{
     width: 30%;
 }
+
+p { 
+    margin:0;
+    font-size: 0.875em;
+}

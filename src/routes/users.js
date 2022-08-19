@@ -100,9 +100,13 @@ router.delete('/users/delete/:id', isAuthenticated, async (req, res) => {
     res.redirect('/users');
 });
 
-router.get('/users/logout', (req, res) =>{
-    req.logout();
-    res.redirect('/');
+router.get('/users/logout', function(req, res, next){
+    req.logout(function(err) {
+        if (err) { 
+          return next(err); 
+          }
+        res.redirect('/');
+      });
 });
 
 module.exports = router;
