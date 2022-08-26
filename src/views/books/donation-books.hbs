@@ -3,11 +3,13 @@
     {{#each books}}
         <div class="col-md-3 p-2">
             <div class="card">
+                <img src="{{path}}" class="card-img-top p-2" height="160px" style="max-width:225px;max-height:160px">
                 <div class="card-body">
                     <h4 class="card-title d-flex justify-content-between align-items-center">
                         {{title}} 
                     </h4>
-                    <p>{{isbn}}</p>                    
+                    <p>{{isbn}}</p>
+                    <p>{{editorial}}</p>                    
                     <p>{{course}}</p>
                     <p>{{demand}}</p>
                     <p align="center">

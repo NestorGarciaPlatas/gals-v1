@@ -24,6 +24,7 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     const { title, isbn, stock, course, demand, editorial } = req.body;
     const {filename, originalname, size, mimetype} = req.file;
     const errors = [];
+          
     if (!title) {
         errors.push({ text: 'Please Write a Title' });
     }
@@ -42,8 +43,13 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     if (!demand) {
         errors.push({ text: 'Please write the demand in case you do not know write 0' });
     }
+    
     //console.log(req.file);
     if (errors.length > 0) {
+        if(filename){            
+            await unlink(path.resolve('./src/public/img/uploads/'+filename));
+            errors.push({text:'Upload again the photo'});
+        }
         res.render('books/new-book', {
             errors,
             title,
