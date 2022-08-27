@@ -1,0 +1,77 @@
+<html>
+
+<h1>Admin Statistics</h1>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Admin options
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/books">All Books</a></li>
+        <li><a class="dropdown-item" href="/users">All Users</a></li>
+        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
+        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
+    </ul>
+</div>
+<p class="saltos p-1"></p>
+<div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Alumno</a>
+    <a class="btn btn-secondary" href="/books/donation" role="button">Course</a>
+</div>
+<p class="saltos p-1"></p>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<div class="row">
+    <table class="table" id="tbl_exporttable_to_xls" >
+        <thead class="table-dark">
+            <th>Title</th>
+            <th>Isbn</th>
+            <th>Editorial</th>
+            <th>Course</th>
+        </thead>
+        <tbody>
+
+
+            {{#each books}}
+            <tr>
+                <td>{{title}}</td>
+                <td>
+                    <p>{{isbn}}</p>
+                </td>
+                <td>
+                    <p>{{editorial}}</p>
+                </td>
+                <td>
+                    <p>{{course}}</p>
+                </td>
+
+            </tr>
+
+            {{else}}
+            <div class="card , mx-auto">
+                <div class="card-body">
+                    <h1>Hello</h1>
+                    <p class="lead">There are not statistics to show, choose one.</p>
+                    <a href="/books/add" class="btn btn-success btn-block"> Creat one!</a>
+                </div>
+            </div>
+            {{/each}}
+        </tbody>
+
+    </table>
+
+</div>
+
+<button class="btn btn-success" onclick="ExportToExcel('xlsx')">Export table to excel</button>
+
+<script>
+    function ExportToExcel(type, fn, dl) {
+        var elt = document.getElementById('tbl_exporttable_to_xls');
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            XLSX.writeFile(wb, fn || ('AllBooks.' + (type || 'xlsx')));
+    }
+
+
+</script>
+    
+</html>

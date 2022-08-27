@@ -96,6 +96,15 @@ router.get('/books', isAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/statistics', isAuthenticated, async (req, res) => {    
+    if (req.user.role == 'admin') {        
+        const books = await Book.find().sort({ course: 'desc' }).lean();
+        res.render('statistics/op-statistics',{books});
+    } else {
+        console.log('no');       
+    }
+});
+
 router.get('/books/donation', isAuthenticated, async (req, res) => {   
     const books = await Book.find().sort({ course: 'desc' }).lean();
     res.render('books/the-books-donation', { books });       
