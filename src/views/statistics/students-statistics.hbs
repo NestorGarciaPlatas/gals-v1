@@ -1,0 +1,97 @@
+<html>
+
+<h1>Admin Statistics</h1>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Admin options
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/books">All Books</a></li>
+        <li><a class="dropdown-item" href="/users">All Users</a></li>
+        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
+        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
+    </ul>
+</div>
+<p class="saltos p-1"></p>
+<div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
+    <a class="btn btn-secondary " href="/statistics/stock" role="button">Stock Info</a>
+    <a class="btn btn-secondary disabled" href="/statistics/students" role="button">Students Info</a>
+</div>
+<p class="saltos p-1"></p>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<div class="row">
+    <table class="table" id="tbl_exporttable_to_xls" >
+        <thead class="table-dark">
+            <th>Name</th>
+            <th>Email</th>            
+            <th>Course</th> 
+            <th>Car</th>
+            <th>Donation</th>           
+        </thead>
+        <tbody>
+
+
+            {{#each users}}
+                
+                    <tr>
+                        <td>{{name}}</td>
+                        <td>
+                            <p>{{email}}</p>
+                        </td>                        
+                        <td>
+                            <p>{{course}}</p>
+                        </td>
+                        <td>
+                            <p>{{car}}</p>
+                        </td>
+                        <td>
+                            {{#each donation}}
+                            <p>ISBN: {{isbn}}  Nota: {{nota}}</p>
+                            {{/each}}
+                        </td>
+
+                    </tr>
+                
+                {{else}}
+                <div class="card , mx-auto">
+                    <div class="card-body">
+                        <h1>
+                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p></h1>                        
+                    </div>
+                </div>
+            {{/each}}
+            <thead class="table-dark">            
+            <th></th>
+            <th>Number</th>            
+            <th>Percent</th>
+            <th></th>
+            <th></th>
+            </thead>
+            <tr><td>Total 4ESO</td>  <td>{{cont4}}</td><td>{{per4}}%</td></tr>
+            <tr><td>Total 3ESO</td>  <td>{{cont3}}</td><td>{{per3}}%</td></tr>
+            <tr><td>Total 2ESO</td>  <td>{{cont2}}</td><td>{{per2}}%</td></tr>
+            <tr><td>Total 1ESO</td>  <td>{{cont1}}</td><td>{{per1}}%</td></tr>
+            <tr><td>Total </td>  <td>{{total}}</td></tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+<button class="btn btn-success" onclick="ExportToExcel('xlsx')">Export table to excel</button>
+
+
+<script>
+    function ExportToExcel(type, fn, dl) {
+        var elt = document.getElementById('tbl_exporttable_to_xls');
+        var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+        return dl ?
+            XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            XLSX.writeFile(wb, fn || ('Students_Info.' + (type || 'xlsx')));
+    }
+
+
+</script>
+    
+</html>

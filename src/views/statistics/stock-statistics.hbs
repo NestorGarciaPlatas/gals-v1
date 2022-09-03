@@ -14,8 +14,8 @@
 </div>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
-    <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Books Info</a>
-    <a class="btn btn-secondary" href="/statistics/stock" role="button">Stock Info</a>
+    <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
+    <a class="btn btn-secondary disabled" href="/statistics/stock" role="button">Stock Info</a>
     <a class="btn btn-secondary" href="/statistics/students" role="button">Students Info</a>
 </div>
 <p class="saltos p-1"></p>
@@ -27,42 +27,39 @@
             <th>Isbn</th>
             <th>Editorial</th>
             <th>Course</th>
-            <th>Stock</th>
-            <th>Demand</th>
+            <th>You need ? books</th>
         </thead>
         <tbody>
 
 
-            {{#each books}}
-            <tr>
-                <td>{{title}}</td>
-                <td>
-                    <p>{{isbn}}</p>
-                </td>
-                <td>
-                    <p>{{editorial}}</p>
-                </td>
-                <td>
-                    <p>{{course}}</p>
-                </td>
-                <td>
-                    <p>{{stock}}</p>
-                </td>
-                <td>
-                    <p>{{demand}}</p>
-                </td>
+            {{#each statics}}
+                {{#if title}}
+                    <tr>
+                        <td>{{title}}</td>
+                        <td>
+                            <p>{{isbn}}</p>
+                        </td>
+                        <td>
+                            <p>{{editorial}}</p>
+                        </td>
+                        <td>
+                            <p>{{course}}</p>
+                        </td>                        
+                        <td>
+                            <p>{{resu}}</p>
+                        </td>
 
-            </tr>
-
-            {{else}}
-            <div class="card , mx-auto">
-                <div class="card-body">
-                    <h1>Hello</h1>
-                    <p class="lead">There are not statistics to show, choose one.</p>
-                    <a href="/books/add" class="btn btn-success btn-block"> Creat one!</a>
+                    </tr>
+                {{/if}}
+                {{else}}
+                <div class="card , mx-auto">
+                    <div class="card-body">
+                        <h1>
+                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p></h1>                        
+                    </div>
                 </div>
-            </div>
             {{/each}}
+            <tr><td>Total</td><td></td><td></td> <td></td> <td>{{cont}}</td></tr>
         </tbody>
 
     </table>
@@ -77,7 +74,7 @@
         var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
         return dl ?
             XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-            XLSX.writeFile(wb, fn || ('AllBooks.' + (type || 'xlsx')));
+            XLSX.writeFile(wb, fn || ('Stock_Books.' + (type || 'xlsx')));
     }
 
 

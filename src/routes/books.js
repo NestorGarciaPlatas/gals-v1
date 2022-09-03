@@ -105,6 +105,70 @@ router.get('/statistics', isAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/statistics/stock', isAuthenticated, async (req, res) => {    
+    if (req.user.role == 'admin') {        
+        const books = await Book.find().sort({ course: 'desc' }).lean();
+        var result = 0;
+        var cont=0;
+        const statics =[{
+            title: '',
+            isbn: '',
+            editorial: '',
+            course: '',
+            resu: '',        
+        }];
+        books.forEach(function(books){
+            result =books.demand-books.stock;
+            if(result>0){
+                cont=cont+result;
+                var statics2 =[{
+                    title: books.title,
+                    isbn: books.isbn,
+                    editorial: books.editorial,
+                    course: books.course,
+                    resu: result,
+                }];
+                statics.push.apply(statics,statics2);
+            }
+        });
+        res.render('statistics/stock-statistics',{statics,cont});
+    } else {        
+        console.log('no');       
+    }
+});
+
+router.get('/statistics/students', isAuthenticated, async (req, res) => {    
+    if (req.user.role == 'admin') {        
+        const users = await User.find().sort({course: 'desc'}).lean();        
+        var cont4=0,cont3=0,cont2=0, cont1=0, total =0,per1=0,per2=0,per3=0,per4;;          
+              
+        users.forEach(function(users){
+            
+            if(users.course=='4ESO'){
+                cont4=cont4+1;
+            }
+            if(users.course=='3ESO'){
+                cont3++;
+            }
+            if(users.course=='2ESO'){
+                cont2++;
+            }
+            if(users.course=='1ESO'){
+                cont1++;
+            }
+        });
+        total = cont1+cont2+cont3+cont4;
+        per4= (cont4/total)*100;
+        per3= (cont3/total)*100;
+        per2= (cont2/total)*100;
+        per2= (cont1/total)*100;
+        res.render('statistics/students-statistics',{users,cont4,cont3,cont2,cont1, total, per4, per3, per2,per1});
+    } else {
+        
+        console.log('no');       
+    }
+});
+
 router.get('/books/donation', isAuthenticated, async (req, res) => {   
     const books = await Book.find().sort({ course: 'desc' }).lean();
     res.render('books/the-books-donation', { books });       
