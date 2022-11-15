@@ -9,6 +9,7 @@ const passport = require('passport');
 const multer = require('multer');
 const uuid = require('uuid').v4;
 
+
 //Initiliazations
 const app = express();
 require('./database');
@@ -38,6 +39,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(express.json());
 const storage = multer.diskStorage({
     destination: path.join(__dirname, 'public/img/uploads'),
     filename: (req, file, cb, filename)=>{
@@ -45,6 +47,7 @@ const storage = multer.diskStorage({
     }
 });
 app.use(multer({ storage: storage }).single('image'));
+//crear otra  constante de storage para multer para guardar archivos
 
 //Global Variables
 app.use((req, res, next) =>{

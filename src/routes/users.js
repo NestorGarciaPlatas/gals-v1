@@ -3,8 +3,9 @@ const { route } = require('.');
 const router = express.Router();
 const { isAuthenticated } = require('../helpers/auth');
 const User = require('../models/User');
-
+const Book = require('../models/Book');
 const passport = require('passport');
+xlsxtojson = require('xlsx-to-json'),
 
 
 router.get('/users/signin', (req, res) => {
@@ -49,7 +50,9 @@ router.post('/users/signup', async (req,res)=>{
             res.redirect('/users/signup');
         }else{
             role = 'customer';
-            const newUser = new User({name, email, course, password,role});
+            subscription = false;
+            adminpermision = false;            
+            const newUser = new User({name, email, course, password,role, subscription, adminpermision});            
             newUser.password = await newUser.encryptPassword(password);
             await newUser.save();
             req.flash('success_msg', 'You are registered');
@@ -99,6 +102,34 @@ router.delete('/users/delete/:id', isAuthenticated, async (req, res) => {
     req.flash('success_msg', 'User delited satisfactoriamente');
     res.redirect('/users');
 });
+
+router.get('/users/penalty/:id', isAuthenticated, async (req, res) => {
+    const user = await User.findById(req.params.id).lean();
+    const books = await Book.find({course:user.course}).sort({ date: 'desc' }).lean();
+    res.render('users/penalty', { user , books});
+});
+
+router.get('/actualize', isAuthenticated, async (req, res) => {
+    res.render('users/actualize');
+});
+
+router.post('/actualizedata', isAuthenticated, async (req, res) => {    
+    let excel2json;
+    excel2json = xlsxtojson;
+    excel2json({
+        input: req.file.path,  
+        output: null, // output json 
+        lowerCaseHeaders:true
+    }, function(err, result) {
+        if(err) {
+          res.json(err);
+        } else {
+          res.json(result);
+        }
+    });
+    console.log(excel2json);
+});
+
 
 router.get('/users/logout', function(req, res, next){
     req.logout(function(err) {

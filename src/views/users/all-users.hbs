@@ -5,6 +5,7 @@
   </button>
   <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="/books">All Books</a></li>
+    <li><a class="dropdown-item" href="/petitions"> Petitions</a></li>
     <li><a class="dropdown-item" href="/users">All Users</a></li>    
     <li><a class="dropdown-item" href="/books/add">New Book</a></li>
     <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
@@ -22,12 +23,16 @@
                     <p>{{role}}</p>
                     <p>{{course}}</p>
                     <p>{{penalty}}</p>
+                    
                     <form action="/users/delete/{{_id}}?_method=DELETE" method="post">
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger btn-block btn-sm" type="submit">
                             Delete
                         </button>
                     </form>
+                    <a href="/users/penalty/{{_id}}" class="btn btn-dark btn-sm" tabindex="-1" role="button" aria-disabled="true">Penalty</a>
+                    
+
                 </div>
             </div>
         </div>

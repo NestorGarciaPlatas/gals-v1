@@ -92,8 +92,42 @@ router.get('/books', isAuthenticated, async (req, res) => {
         res.render('books/all-books', { books });
     } else {
         const books = await Book.find({course:req.user.course}).sort({ date: 'desc' }).lean();
-        res.render('books/the-books-order', { books });       
+        if(req.user.subscription ==true){
+            res.render('books/subscribe',{books});
+        }else{
+            sub=true;
+            res.render('books/subscribe',{sub});
+        }              
     }
+});
+
+router.get('/petitions', isAuthenticated, async (req, res) => {    
+    if (req.user.role == 'admin') {        
+        const users = await User.find({subscription: false}).sort({ date: 'desc' }).lean();
+        res.render('users/petitions',{users});
+    } else {
+        console.log('no');       
+    }
+});
+
+router.put('/books/petitions/:id', isAuthenticated, async (req, res) => {
+    const user = await User.findById(req.params.id).lean();
+    
+    const books = await Book.find({course:user.course}).sort({ date: 'desc' }).lean();
+    
+        subscription =true;
+        var car =[];
+        books.forEach(async function(books){
+            car.push(books.isbn);
+            var demand = books.demand +1;
+            await Book.findByIdAndUpdate(books._id, {  demand });
+        });
+        
+        await User.findByIdAndUpdate(req.params.id,{car,subscription});
+        const users = await User.find({subscription: false}).sort({ date: 'desc' }).lean();
+        
+        req.flash('success_msg', 'You are now subcribed');
+        res.render('users/petitions',{users});   
 });
 
 router.get('/statistics', isAuthenticated, async (req, res) => {    
@@ -161,7 +195,7 @@ router.get('/statistics/students', isAuthenticated, async (req, res) => {
         per4= (cont4/total)*100;
         per3= (cont3/total)*100;
         per2= (cont2/total)*100;
-        per2= (cont1/total)*100;
+        per1= (cont1/total)*100;
         res.render('statistics/students-statistics',{users,cont4,cont3,cont2,cont1, total, per4, per3, per2,per1});
     } else {
         
@@ -173,6 +207,23 @@ router.get('/books/donation', isAuthenticated, async (req, res) => {
     const books = await Book.find().sort({ course: 'desc' }).lean();
     res.render('books/the-books-donation', { books });       
     
+});
+
+router.post('/books/subscribe', isAuthenticated, async(req, res)=>{
+    const books = await Book.find({course:req.user.course}).sort({ date: 'desc' }).lean();
+    if(req.user.adminpermision==true && req.user.subscription == true){
+        req.flash('success_msg', 'You are now subcribed');
+        res.render('books/subscribe',{books});
+    }else if (req.user.adminpermision==true && req.user.subscription == false) {
+        sub=true;
+        res.render('books/subscribe',{sub});
+    } else {
+        adminpermision=true;
+        sub=true;
+        await User.findByIdAndUpdate(req.user.id,{adminpermision});
+        req.flash('success_msg', 'You are now subcribed');
+        res.render('books/subscribe',{sub});
+    }
 });
 
 router.put('/books/donation/:id', isAuthenticated, async (req, res) => {

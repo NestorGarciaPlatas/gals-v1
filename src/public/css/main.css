@@ -11,3 +11,6 @@ p {
     margin:0;
     font-size: 0.875em;
 }
+form {
+    display: inline;
+}

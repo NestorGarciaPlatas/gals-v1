@@ -9,6 +9,8 @@ const UserSchema = new Schema({
    role:{type:String , required: true},
    course:{type:String , required: true},
    penalty:{type: Number },
+   subscription:{type:Boolean, required: true},
+   adminpermision:{type:Boolean, required: true},
    car:[String],
    //donation:[String],
    donation:[{
