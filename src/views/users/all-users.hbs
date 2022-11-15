@@ -5,12 +5,18 @@
   </button>
   <ul class="dropdown-menu">
     <li><a class="dropdown-item" href="/books">All Books</a></li>
-    <li><a class="dropdown-item" href="/petitions"> Petitions</a></li>
     <li><a class="dropdown-item" href="/users">All Users</a></li>    
     <li><a class="dropdown-item" href="/books/add">New Book</a></li>
     <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
   </ul>
 </div>
+<p class="saltos p-1"></p>
+<div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Subscribed Users</a>
+    <a class="btn btn-secondary" href="/petitions" role="button">Subcribe petitions</a>
+    <a class="btn btn-secondary" href="/registerusers" role="button">Users with no subcription</a>
+</div>
+<p class="saltos p-1"></p>
 <div class="row">
     {{#each users}}
         <div class="col-md-3 p-2">
@@ -40,7 +46,7 @@
         <div class="card , mx-auto">
             <div class="card-body">
                 <h1>Hello</h1>
-                <p class="lead">There are not notes yet.</p>
+                <p class="lead">There are not users subcribed, check the subcribe petitions.</p>
                 <a href="/notes/add" class="btn btn-success btn-block"> Creat one!</a>
             </div>
         </div>    

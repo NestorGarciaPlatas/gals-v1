@@ -66,7 +66,7 @@ router.post('/users/signup', async (req,res)=>{
 router.get('/users', isAuthenticated, async (req,res)=>{
        
     if(req.user.role == 'admin'){        
-        const users = await User.find().sort({date: 'desc'}).lean();        
+        const users = await User.find({subscription: true}).sort({date: 'desc'}).lean();        
         res.render('users/all-users', { users});
     }else{        
         const user = await User.findById(req.user.id);                

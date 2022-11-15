@@ -95,7 +95,7 @@ router.get('/books', isAuthenticated, async (req, res) => {
         if(req.user.subscription ==true){
             res.render('books/subscribe',{books});
         }else{
-            sub=true;
+            sub=req.user.adminpermision;
             res.render('books/subscribe',{sub});
         }              
     }
@@ -103,8 +103,17 @@ router.get('/books', isAuthenticated, async (req, res) => {
 
 router.get('/petitions', isAuthenticated, async (req, res) => {    
     if (req.user.role == 'admin') {        
-        const users = await User.find({subscription: false}).sort({ date: 'desc' }).lean();
+        const users = await User.find({subscription: false,adminpermision:true}).sort({ date: 'desc' }).lean();
         res.render('users/petitions',{users});
+    } else {
+        console.log('no');       
+    }
+});
+
+router.get('/registerusers', isAuthenticated, async (req, res) => {    
+    if (req.user.role == 'admin') {        
+        const users = await User.find({adminpermision: false}).sort({ date: 'desc' }).lean();
+        res.render('users/registerusers',{users});
     } else {
         console.log('no');       
     }
@@ -215,11 +224,11 @@ router.post('/books/subscribe', isAuthenticated, async(req, res)=>{
         req.flash('success_msg', 'You are now subcribed');
         res.render('books/subscribe',{books});
     }else if (req.user.adminpermision==true && req.user.subscription == false) {
-        sub=true;
+        sub=req.user.adminpermision;
         res.render('books/subscribe',{sub});
     } else {
         adminpermision=true;
-        sub=true;
+        sub=req.user.adminpermision;
         await User.findByIdAndUpdate(req.user.id,{adminpermision});
         req.flash('success_msg', 'You are now subcribed');
         res.render('books/subscribe',{sub});
