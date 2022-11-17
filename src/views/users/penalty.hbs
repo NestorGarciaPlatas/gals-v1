@@ -1,4 +1,4 @@
-<div class="col-md-4 mx-auto">    
+<!--<div class="col-md-4 mx-auto">    
     <div class="card">
         <div class="card-header">
             <h3>Editar User</h3>
@@ -11,17 +11,13 @@
                 </div>
                 <div class="form-group p-1">
                     <input type="text" name="email" class="form-control" placeholder="Email" value="{{user.email}}">
-                    <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
                 </div>
                 <div class="form-group p-1">
-                    <input type="text" name="role" class="form-control" placeholder="Role" value="{{user.role}}">
+                    <input type="text" name="role" class="form-control" placeholder="Role" value="{{user._id}}">
                 </div>
                 <div class="form-group p-1">
                     <input type="text" name="course" class="form-control" placeholder="Course" value="{{user.course}}">                    
-                </div>
-                <!--<div class="form-group p-1">
-                    <input type="text" name="car" class="form-control" placeholder="Car" value="{{user.car}}">
-                </div>-->           
+                </div>           
                 <div class="form-group p-1">
                     <button class="btn btn-primary btn-block" type="submit">
                         Save
@@ -30,9 +26,9 @@
             </form>
         </div>
     </div>
-</div>
+</div>-->
 <div class="row">
-    <h1>Purchased Books</h1>
+    <h1>Books of {{user.name}} to be penalize</h1>
     {{#each books}}
         <div class="col-md-3 p-2">
             <div class="card">
@@ -46,11 +42,14 @@
                     <p>{{course}}</p>
                     <p>{{demand}}</p>
                     <p align="center">
-                        <form action="/books/orderdelete/{{_id}}?_method=PUT" method="POST" style="display:inline">
-                            <input type="hidden" name="_method" value="PUT">                        
-                            <button class="btn btn-danger btn-block btn-sm" type="submit" >                                
-                                Delete
-                            </button>
+                        
+                        <form action="/users/penalty2/{{../user._id}}?_method=PUT" method="POST" style="display:inline">
+                            <input type="hidden" name="_method" value="PUT">
+                            <input type="hidden" name="idbook" value="{{_id}}">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <input class="btn btn-success btn-sm" type="submit" name="estado" value="NoRecived">
+                                <input class="btn btn-secondary btn-sm" type="submit" name="estado" value="Disrepair">
+                            </div>                        
                         </form>                        
                     </p>        
                 </div>

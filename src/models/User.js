@@ -13,9 +13,10 @@ const UserSchema = new Schema({
    adminpermision:{type:Boolean, required: true},
    car:[String],
    //donation:[String],
-   donation:[{
+   entregado:[{
         isbn:{type:String},
-        nota:{type:String}
+        estado:{type:String},
+        price:{type: Number}
    }],
    date:{ type: Date, default: Date.now} 
 });

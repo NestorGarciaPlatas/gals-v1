@@ -25,6 +25,7 @@ router.get('/users/signup', (req, res) =>{
 router.post('/users/signup', async (req,res)=>{
     const {name, email, course, password, confirm_password} = req.body;
     const errors=[];
+    const success_mssg =[];
     if(name.length <= 0){
         errors.push({text:'Please insert your name'});
     }
@@ -43,11 +44,11 @@ router.post('/users/signup', async (req,res)=>{
         const emailUser = await User.findOne({email: email});
         //console.log(emailUser);
         if(emailUser){
-            
-            req.flash('error_msg', 'The email is already in use');
+            errors.push({text:'The email is already in use'});
+            //req.flash('error_msg', 'The email is already in use');
             //req.flash('success_msg', 'You are registered');
             //console.log('emailUser');
-            res.redirect('/users/signup');
+            res.render('users/signup',{errors});
         }else{
             role = 'customer';
             subscription = false;
@@ -55,8 +56,9 @@ router.post('/users/signup', async (req,res)=>{
             const newUser = new User({name, email, course, password,role, subscription, adminpermision});            
             newUser.password = await newUser.encryptPassword(password);
             await newUser.save();
-            req.flash('success_msg', 'You are registered');
-            res.redirect('/users/signin');
+            success_mssg.push({text:'You are registered'});
+            //req.flash('success_msg', 'You are registered');
+            res.render('users/signin',{success_mssg});
         }
         
     }
@@ -85,7 +87,9 @@ router.get('/users/edit/:id', isAuthenticated, async (req, res) => {
 
 router.put('/users/edit-user/:id', isAuthenticated, async (req, res) => {
     const { name, email, role, course } = req.body;
+    //const success_msg =[];
     await User.findByIdAndUpdate(req.params.id, { name, email, role, course});
+    //success_msg.push({text:'User actualizada satisfactoriamente'});
     req.flash('success_msg', 'User actualizada satisfactoriamente');
     res.redirect('/users')
 });
@@ -107,6 +111,45 @@ router.get('/users/penalty/:id', isAuthenticated, async (req, res) => {
     const user = await User.findById(req.params.id).lean();
     const books = await Book.find({course:user.course}).sort({ date: 'desc' }).lean();
     res.render('users/penalty', { user , books});
+});
+
+router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
+    const user = await User.findById(req.params.id).lean();
+    const {idbook, estado}=req.body;
+    console.log(user);
+    console.log(idbook);
+    console.log(estado);
+    const book = await Book.findById(idbook).lean();
+    const stock= book.stock -1;
+    const errors = [];
+    const success_mssg =[];
+    const entregado =[{
+        isbn: book.isbn,
+        estado: estado,
+        price: book.penalizacion,        
+    }];
+    var isbnEntregado = false;
+    const books = await Book.find({course:user.course}).sort({ date: 'desc' }).lean();
+    const don = user.entregado;
+    don.forEach(function(don){        
+        if(book.isbn==don.isbn){            
+            isbnEntregado=true;
+        }
+    });    
+    if(isbnEntregado){
+        errors.push({ text: 'No puedes penalizar el mismo libro 2 veces' });
+        res.render('users/penalty',{errors,books,user});
+    }else{
+        const entregado2=user.entregado;        
+        entregado.push.apply(entregado,entregado2);        
+        await Book.findByIdAndUpdate(idbook, {  stock });    
+        await User.findByIdAndUpdate(user._id,{entregado});
+        success_mssg.push({text:'Penalized successfully'});
+        //req.flash('success_msg', 'Penalized successfully');
+        res.render('users/penalty',{books,user,success_mssg});
+        console.log(entregado);
+    }
+    //mirar este metodo es lo mismo put('/books/donation/:id'
 });
 
 router.get('/actualize', isAuthenticated, async (req, res) => {

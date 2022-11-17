@@ -13,31 +13,30 @@
                 <p>{{course}}</p>
                 <p>{{demand}}</p>
                 <p align="center">
-                
+
                 </p>
             </div>
         </div>
     </div>
     {{else}}
-        {{#if sub}}
-        <div class="card , mx-auto">
-            <div class="card-body">
-                <h1>Waitting admin permision.</h1>
-            </div>
+    {{#if sub}}
+    <div class="card , mx-auto">
+        <div class="card-body">
+            <h1>Waitting admin permision.</h1>
         </div>
-        {{else}}
-        <div class="card , mx-auto">
-            <div class="card-body">
-                <h1>You are not subscribed yet.</h1>
-                <form action="/books/subscribe" method="POST" style="display:inline">
-                        
-                        <button class="btn btn-primary " type="submit">
-                            Sunscribe
-                        </button>
-                </form>
-            </div>
+    </div>
+    {{else}}
+    <div class="card , mx-auto">
+        <div class="card-body">
+            <h1>You are not subscribed yet.</h1>
+            <form action="/books/subscribe" method="POST" style="display:inline">
+                <button class="btn btn-primary " type="submit">
+                    Sunscribe
+                </button>
+            </form>
         </div>
-        {{/if}}
-        
+    </div>
+    {{/if}}
+
     {{/each}}
 </div>

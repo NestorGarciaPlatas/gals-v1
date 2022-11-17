@@ -8,6 +8,7 @@ const BookSchema = new Schema({
    course:{type:String , required: true},
    demand:{type: Number, required: true},
    editorial:{type: String, requiere: true},
+   penalizacion:{type: Number, requiere:true},
    filename: {type: String},
    path:{type: String},
    originalname:{type: String},

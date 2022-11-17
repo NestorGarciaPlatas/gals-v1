@@ -21,7 +21,7 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     if (req.user.role != 'admin') {
         res.redirect('/notes');
     }
-    const { title, isbn, stock, course, demand, editorial } = req.body;
+    const { title, isbn, stock, course, demand, editorial, penalizacion } = req.body;
     const {filename, originalname, size, mimetype} = req.file;
     const errors = [];
           
@@ -36,6 +36,9 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
     }
     if (!stock) {
         errors.push({ text: 'Please write the Stock available' });
+    }
+    if (!penalizacion) {
+        errors.push({ text: 'Please write the Penalization of the book' });
     }
     if (course == 'Select the course of the book:') {
         errors.push({ text: 'Please, Select the course of the book.' });
@@ -56,11 +59,12 @@ router.post('/books/new-book', isAuthenticated, async (req, res) => {
             isbn,
             stock,
             demand,
-            editorial
+            editorial,
+            penalizacion
         });
     } else {
         const path = '/img/uploads/'+ filename;
-        const newBook = new Book({ title, isbn, stock, course, demand, editorial, filename, path, originalname, size, mimetype });
+        const newBook = new Book({ title, isbn, stock, course, demand, editorial, penalizacion, filename, path, originalname, size, mimetype });
         await newBook.save();
         req.flash('success_msg', 'Book agregada successfully');
         res.redirect('/books');
@@ -121,7 +125,7 @@ router.get('/registerusers', isAuthenticated, async (req, res) => {
 
 router.put('/books/petitions/:id', isAuthenticated, async (req, res) => {
     const user = await User.findById(req.params.id).lean();
-    
+    const success_mssg =[];
     const books = await Book.find({course:user.course}).sort({ date: 'desc' }).lean();
     
         subscription =true;
@@ -133,10 +137,10 @@ router.put('/books/petitions/:id', isAuthenticated, async (req, res) => {
         });
         
         await User.findByIdAndUpdate(req.params.id,{car,subscription});
-        const users = await User.find({subscription: false}).sort({ date: 'desc' }).lean();
-        
-        req.flash('success_msg', 'You are now subcribed');
-        res.render('users/petitions',{users});   
+        const users = await User.find({subscription: false,adminpermision:true}).sort({ date: 'desc' }).lean();
+        success_mssg.push({text:'Petition process successfully'});
+        //req.flash('success_msg', 'Petition process successfully');
+        res.render('users/petitions',{users,success_mssg});   
 });
 
 router.get('/statistics', isAuthenticated, async (req, res) => {    
@@ -228,7 +232,7 @@ router.post('/books/subscribe', isAuthenticated, async(req, res)=>{
         res.render('books/subscribe',{sub});
     } else {
         adminpermision=true;
-        sub=req.user.adminpermision;
+        sub=adminpermision;
         await User.findByIdAndUpdate(req.user.id,{adminpermision});
         req.flash('success_msg', 'You are now subcribed');
         res.render('books/subscribe',{sub});
@@ -357,8 +361,8 @@ router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
 });
 
 router.put('/books/edit-book/:id', isAuthenticated, async (req, res) => {
-    const { title, isbn, stock, course, demand, editorial } = req.body;
-    await Book.findByIdAndUpdate(req.params.id, { title, isbn, stock, course, demand, editorial });
+    const { title, isbn, stock, course, demand, editorial, penalizacion } = req.body;
+    await Book.findByIdAndUpdate(req.params.id, { title, isbn, stock, course, demand, editorial, penalizacion });
     req.flash('success_msg', 'Book actualizada satisfactoriamente');
     res.redirect('/books')
 });
