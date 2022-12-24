@@ -7,7 +7,7 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const multer = require('multer');
-const uuid = require('uuid').v4;
+//const uuid = require('uuid').v4;
 
 
 //Initiliazations
@@ -40,14 +40,24 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(express.json());
-const storage = multer.diskStorage({
+/*const storageimage = multer.diskStorage({
     destination: path.join(__dirname, 'public/img/uploads'),
-    filename: (req, file, cb, filename)=>{
+    fieldname: (req, file, cb, fieldname)=>{
         cb(null, uuid() + path.extname(file.originalname));
     }
 });
-app.use(multer({ storage: storage }).single('image'));
+//app.use(multer({ storage: storageimage }).single('image'));
+multer({ storage: storageimage }).single('image');*/
 //crear otra  constante de storage para multer para guardar archivos
+/*const storage2 = multer.diskStorage({
+    destination: path.join(__dirname, 'public/file/uploads'),
+    filename: (req, file, cb, filename)=>{
+        cb(null, file.originalname);
+    }
+});
+
+//const upload = multer({ storage: storage2 }).single('excelFile');
+app.use(multer({ storage: storage2 }).single('excelFile'));*/
 
 //Global Variables
 app.use((req, res, next) =>{

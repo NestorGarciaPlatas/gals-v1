@@ -1,7 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const {unlink} = require('fs-extra');
+const { unlink } = require('fs-extra');
+const uuid = require('uuid').v4;
+const multer = require('multer');
+const storageimage = multer.diskStorage({
+    destination: path.join(__dirname,'../', 'public/img/uploads'),
+    filename: (req, file, cb, filename)=>{
+        cb(null, uuid() + path.extname(file.originalname));
+    }
+});
+const uploadimage = multer({ storage: storageimage });
+
+
 
 //prueba de que el guardado funciona acabndo de comprobar cosas
 //const Note = require('../models/Book');
@@ -17,7 +28,7 @@ router.get('/books/add', isAuthenticated, (req, res) => {
     }
 });
 
-router.post('/books/new-book', isAuthenticated, async (req, res) => {
+router.post('/books/new-book',uploadimage.single('image'), isAuthenticated, async (req, res) => {
     if (req.user.role != 'admin') {
         res.redirect('/notes');
     }
