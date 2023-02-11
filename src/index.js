@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
-const multer = require('multer');
+//const multer = require('multer');
 //const uuid = require('uuid').v4;
 
 
@@ -71,7 +71,7 @@ app.use((req, res, next) =>{
 
 //Routes
 app.use(require('./routes/index'));
-app.use(require('./routes/notes'));
+app.use(require('./routes/oldusers'));
 app.use(require('./routes/users'));
 app.use(require('./routes/books'));
 

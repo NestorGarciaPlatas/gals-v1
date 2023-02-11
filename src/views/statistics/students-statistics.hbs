@@ -11,6 +11,7 @@
         <li><a class="dropdown-item" href="/books/add">New Book</a></li>
         <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
         <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
+        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
     </ul>
 </div>
 <p class="saltos p-1"></p>
@@ -22,58 +23,78 @@
 <p class="saltos p-1"></p>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <div class="row">
-    <table class="table" id="tbl_exporttable_to_xls" >
+    <table class="table" id="tbl_exporttable_to_xls">
         <thead class="table-dark">
             <th>Name</th>
-            <th>Email</th>            
-            <th>Course</th> 
+            <th>Email</th>
+            <th>Course</th>
             <th>Car</th>
-            <th>Donation</th>           
+            <th>Donation</th>
         </thead>
         <tbody>
 
 
             {{#each users}}
-                
-                    <tr>
-                        <td>{{name}}</td>
-                        <td>
-                            <p>{{email}}</p>
-                        </td>                        
-                        <td>
-                            <p>{{course}}</p>
-                        </td>
-                        <td>
-                            <p>{{car}}</p>
-                        </td>
-                        <td>
-                            {{#each donation}}
-                            <p>ISBN: {{isbn}}  Nota: {{nota}}</p>
-                            {{/each}}
-                        </td>
 
-                    </tr>
-                
-                {{else}}
-                <div class="card , mx-auto">
-                    <div class="card-body">
-                        <h1>
-                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p></h1>                        
-                    </div>
+            <tr>
+                <td>{{name}}</td>
+                <td>
+                    <p>{{email}}</p>
+                </td>
+                <td>
+                    <p>{{course}}</p>
+                </td>
+                <td>
+                    <p>{{car}}</p>
+                </td>
+                <td>
+                    {{#each entregado}}
+                    <p>ISBN: {{isbn}} Nota: {{estado}}</p>
+                    {{/each}}
+                </td>
+
+            </tr>
+
+            {{else}}
+            <div class="card , mx-auto">
+                <div class="card-body">
+                    <h1>
+                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p>
+                    </h1>
                 </div>
+            </div>
             {{/each}}
-            <thead class="table-dark">            
-            <th></th>
-            <th>Number</th>            
-            <th>Percent</th>
-            <th></th>
-            <th></th>
+            <thead class="table-dark">
+                <th></th>
+                <th>Number</th>
+                <th>Percent</th>
+                <th></th>
+                <th></th>
             </thead>
-            <tr><td>Total 4ESO</td>  <td>{{cont4}}</td><td>{{per4}}%</td></tr>
-            <tr><td>Total 3ESO</td>  <td>{{cont3}}</td><td>{{per3}}%</td></tr>
-            <tr><td>Total 2ESO</td>  <td>{{cont2}}</td><td>{{per2}}%</td></tr>
-            <tr><td>Total 1ESO</td>  <td>{{cont1}}</td><td>{{per1}}%</td></tr>
-            <tr><td>Total </td>  <td>{{total}}</td></tr>
+            <tr>
+                <td>Total 4ESO</td>
+                <td>{{cont4}}</td>
+                <td>{{per4}}%</td>
+            </tr>
+            <tr>
+                <td>Total 3ESO</td>
+                <td>{{cont3}}</td>
+                <td>{{per3}}%</td>
+            </tr>
+            <tr>
+                <td>Total 2ESO</td>
+                <td>{{cont2}}</td>
+                <td>{{per2}}%</td>
+            </tr>
+            <tr>
+                <td>Total 1ESO</td>
+                <td>{{cont1}}</td>
+                <td>{{per1}}%</td>
+            </tr>
+            <tr>
+                <td>Total </td>
+                <td>{{total}}</td>
+            </tr>
         </tbody>
 
     </table>
@@ -94,5 +115,5 @@
 
 
 </script>
-    
+
 </html>

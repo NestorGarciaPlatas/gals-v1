@@ -4,6 +4,8 @@ const router = express.Router();
 const { isAuthenticated } = require('../helpers/auth');
 const User = require('../models/User');
 const Book = require('../models/Book');
+const Old = require('../models/Oldusers');
+const Oldbk = require('../models/Oldbooks');
 const passport = require('passport');
 const multer = require('multer');
 const XLSX = require('xlsx');
@@ -119,6 +121,7 @@ router.get('/users/penalty/:id', isAuthenticated, async (req, res) => {
 
 router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
     const user = await User.findById(req.params.id).lean();
+    const currentYear = new Date().getFullYear();
     const { idbook, estado } = req.body;
     console.log(user);
     console.log(idbook);
@@ -131,6 +134,8 @@ router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
         isbn: book.isbn,
         estado: estado,
         price: book.penalizacion,
+        course: book.course,
+        year: currentYear
     }];
     var isbnEntregado = false;
     const books = await Book.find({ course: user.course }).sort({ date: 'desc' }).lean();
@@ -174,10 +179,68 @@ router.post('/uploadfile', upload.single('excelFile'), isAuthenticated, async (r
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const data = XLSX.utils.sheet_to_json(worksheet);
+    //busqueda de todos los usuarios que estan subcritos y miro los que estan en el excel y los que no los 
+    const userss = await User.find({ subscription: true, adminpermision: true }).sort({ date: 'desc' }).lean();
+    const currentYear = new Date().getFullYear();
+    userss.forEach(async function (user) {
+        var eliminar = true;
+        data.forEach(alumno => {
+            if (alumno.nombre != user.name && eliminar == true) {
+                
+                if (user.role == "admin") {
+                    eliminar = false;
+                    console.log("--admin: "+user.name+" mola")
+                }
+            } else {
+                eliminar = false;
+            }
+        });
+        if (eliminar == false) {
+            console.log("se queda " + user.name + " --");
+            
+        } else {
+            
+            const newOldUser = new Old({name:user.name,
+                email: user.email,
+                password: user.password,
+                role: user.role,
+                course: user.course,
+                penalty:user.penalty,
+                subscription:user.subscription,
+                adminpermision:user.adminpermision,
+                car:user.car,
+                //donation:[String],
+                entregado: user.entregado,
+                date: currentYear
+            });
+            await newOldUser.save();
+            console.log("----el nombre es: " + user.name + " -----importar/eliminar-------");
+            await User.findByIdAndDelete(user._id);
+        }
+    });
+    const book = await Book.find().sort({ course: 'desc' }).lean();
+    var snapchot = [];
+    book.forEach( function (book) {
+        snapchot.push({
+            title: book.title,
+            isbn: book.isbn,
+            stock: book.stock,
+            course: book.course,
+            demand: book.demand,
+            editorial: book.editorial,
+            penalizacion: book.penalizacion,
+        });
+    });
+    const newOldBooks = new Oldbk({
+        snapchot: snapchot,
+        year: currentYear
+    });
+    await newOldBooks.save();
+
     data.forEach(async alumno => {
         const users = await User.find({ name: alumno.nombre });
         if (users.length != 0) {
-            console.log(users[0].course);
+            console.log(users[0].course+users[0].name);
 
 
             if (users[0].course != alumno.curso && users[0].subscription == true) {
@@ -190,6 +253,7 @@ router.post('/uploadfile', upload.single('excelFile'), isAuthenticated, async (r
                     await Book.findByIdAndUpdate(books._id, { demand });
                 });
                 await User.findByIdAndUpdate(users[0].id, { car, course });
+                console.log(users[0].name)
             } else {
                 console.log(".....................");
                 console.log(`Nombre: ${alumno.nombre}`);

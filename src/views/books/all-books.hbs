@@ -9,8 +9,17 @@
     <li><a class="dropdown-item" href="/books/add">New Book</a></li>
     <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
     <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
+    <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
   </ul>
 </div>
+<p class="saltos p-1"></p>
+{{#if books}}
+<form action="/books/demanda" method="post">
+    <button class="btn btn-success btn-block btn-sm" type="submit">
+        Actualizar demanda
+    </button>
+</form>
+{{/if}}
 <div class="row">    
     {{#each books}}
         <div class="col-md-3 p-2">
@@ -31,6 +40,14 @@
                             Delete
                         </button>
                     </form>
+                    <form action="/books/actualizarlibro/{{_id}}?_method=put" method="post">
+                        <input type="hidden" name="_method" value="put">
+                        <button class="btn btn-success btn-block btn-sm" type="submit">
+                            Actualizar
+                        </button>
+                    </form>
+                    <button type="button" class="btn  btn-info btn-sm" data-bs-toggle="popover" title="Actualización" style="display:inline"
+                        data-bs-content="La función actualizar añade ese libro a todos los usuarios, solo usar cuando añades un libro nuevo despues de actualizar la base de datos.">Info actualizar</button>
                 </div>
             </div>
         </div>

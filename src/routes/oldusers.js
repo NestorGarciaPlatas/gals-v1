@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const Note = require('../models/Note');
+const Old = require('../models/Oldusers');
 const { isAuthenticated } = require('../helpers/auth');
 const User = require('../models/User');
 

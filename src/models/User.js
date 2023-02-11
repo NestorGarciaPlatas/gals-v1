@@ -16,7 +16,9 @@ const UserSchema = new Schema({
    entregado:[{
         isbn:{type:String},
         estado:{type:String},
-        price:{type: Number}
+        price: { type: Number },
+        course: { type: String },//curso y año
+        year:{type:Number}
    }],
    date:{ type: Date, default: Date.now} 
 });

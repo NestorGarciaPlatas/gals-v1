@@ -1,54 +1,64 @@
-<h1>Admin Petitions</h1>     
+<h1>Admin Petitions</h1>
 <div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Admin options
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="/books">All Books</a></li>
-    <li><a class="dropdown-item" href="/users">All Users</a></li>    
-    <li><a class="dropdown-item" href="/books/add">New Book</a></li>
-    <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
-  </ul>
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Admin options
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/books">All Books</a></li>
+        <li><a class="dropdown-item" href="/users">All Users</a></li>
+        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
+        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
+        <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
+        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
+    </ul>
 </div>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
-    <a class="btn btn-secondary" href="/users" role="button" >Subscribed Users</a>
+    <a class="btn btn-secondary" href="/users" role="button">Subscribed Users</a>
     <a class="btn btn-secondary disable" href="#" role="button" aria-disabled="true">Subcribe petitions</a>
     <a class="btn btn-secondary" href="/registerusers" role="button">Users with no subcription</a>
 </div>
+<p class="saltos p-1"></p>
+{{#if users}}
+<form action="/books/allpetitions" method="post">
+    <button class="btn btn-success btn-block btn-sm" type="submit">
+        Acceptar todo
+    </button>
+</form>
+{{/if}}
 <div class="row">
     {{#each users}}
-        <div class="col-md-3 p-2">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title d-flex justify-content-between align-items-center">
-                        {{name}} 
-                    </h4>
-                    <p>{{email}}</p>
-                    <p>{{role}}</p>
-                    <p>{{course}}</p>
-                    <p>{{penalty}}</p>
-                    
-                    <form action="/users/delete/{{_id}}?_method=DELETE" method="post">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button class="btn btn-danger btn-block btn-sm" type="submit">
-                            Delete
-                        </button>
-                    </form>
-                    <form action="/books/petitions/{{_id}}?_method=PUT" method="post">
-                        <input type="hidden" name="_method" value="PUT">
-                        <button class="btn btn-success btn-block btn-sm" type="submit">
-                            Accept
-                        </button>
-                    </form>
-                </div>
+    <div class="col-md-3 p-2">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title d-flex justify-content-between align-items-center">
+                    {{name}}
+                </h4>
+                <p>{{email}}</p>
+                <p>{{role}}</p>
+                <p>{{course}}</p>
+                <p>{{penalty}}</p>
+
+                <form action="/users/delete/{{_id}}?_method=DELETE" method="post">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-danger btn-block btn-sm" type="submit">
+                        Delete
+                    </button>
+                </form>
+                <form action="/books/petitions/{{_id}}?_method=PUT" method="post">
+                    <input type="hidden" name="_method" value="PUT">
+                    <button class="btn btn-success btn-block btn-sm" type="submit">
+                        Accept
+                    </button>
+                </form>
             </div>
         </div>
+    </div>
     {{else}}
-        <div class="card , mx-auto">
-            <div class="card-body">
-                <h1>There are not more petitions</h1>
-            </div>
-        </div>    
+    <div class="card , mx-auto">
+        <div class="card-body">
+            <h1>There are not more petitions</h1>
+        </div>
+    </div>
     {{/each}}
 </div>

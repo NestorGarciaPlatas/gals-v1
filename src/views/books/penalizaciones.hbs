@@ -1,0 +1,45 @@
+<div class="row">
+    {{#each users}}
+        {{#if email}}
+            <h1>Penalizaciones de {{name}}</h1>
+            <table class="table" id="tbl_exporttable_to_xls">
+                <thead class="table-dark">
+                    <th>Isbn</th>
+                    <th>Motivo</th>
+                    <th>Course</th>
+                    <th>Precio</th>
+                    <th>Año</th>
+                </thead>
+                <tbody>
+                    {{#each entregado}}
+                    <tr>
+                        <td>{{isbn}}</td>
+                        <td>
+                            <p>{{estado}}</p>
+                        </td>
+                        <td>
+                            <p>{{course}}</p>
+                        </td>
+                        <td>
+                            <p>{{price}}€</p>
+                        </td>
+                        <td>
+                            <p>{{year}}</p>
+                        </td>
+
+                    </tr>
+
+                    {{else}}
+                    <div class="card , mx-auto">
+                        <div class="card-body">
+                            <p class="lead">No tienes penalizaciones.</p>
+                        </div>
+                    </div>
+                    {{/each}}
+                
+                </tbody>
+
+            </table>
+        {{/if}}
+    {{/each}}
+</div>

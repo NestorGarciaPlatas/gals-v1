@@ -11,6 +11,7 @@
         <li><a class="dropdown-item" href="/books/add">New Book</a></li>
         <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
         <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
+        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
     </ul>
 </div>
 <p class="saltos p-1"></p>
@@ -22,7 +23,7 @@
 <p class="saltos p-1"></p>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <div class="row">
-    <table class="table" id="tbl_exporttable_to_xls" >
+    <table class="table" id="tbl_exporttable_to_xls">
         <thead class="table-dark">
             <th>Title</th>
             <th>Isbn</th>
@@ -34,33 +35,40 @@
 
 
             {{#each statics}}
-                {{#if title}}
-                    <tr>
-                        <td>{{title}}</td>
-                        <td>
-                            <p>{{isbn}}</p>
-                        </td>
-                        <td>
-                            <p>{{editorial}}</p>
-                        </td>
-                        <td>
-                            <p>{{course}}</p>
-                        </td>                        
-                        <td>
-                            <p>{{resu}}</p>
-                        </td>
+            {{#if title}}
+            <tr>
+                <td>{{title}}</td>
+                <td>
+                    <p>{{isbn}}</p>
+                </td>
+                <td>
+                    <p>{{editorial}}</p>
+                </td>
+                <td>
+                    <p>{{course}}</p>
+                </td>
+                <td>
+                    <p>{{resu}}</p>
+                </td>
 
-                    </tr>
-                {{/if}}
-                {{else}}
-                <div class="card , mx-auto">
-                    <div class="card-body">
-                        <h1>
-                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p></h1>                        
-                    </div>
+            </tr>
+            {{/if}}
+            {{else}}
+            <div class="card , mx-auto">
+                <div class="card-body">
+                    <h1>
+                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p>
+                    </h1>
                 </div>
+            </div>
             {{/each}}
-            <tr><td>Total</td><td></td><td></td> <td></td> <td>{{cont}}</td></tr>
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{{cont}}</td>
+            </tr>
         </tbody>
 
     </table>
@@ -80,5 +88,5 @@
 
 
 </script>
-    
+
 </html>
