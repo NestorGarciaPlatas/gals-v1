@@ -1,0 +1,236 @@
+<h1>Admin Statistics</h1>
+<div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Admin options
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/books">All Books</a></li>
+        <li><a class="dropdown-item" href="/users">All Users</a></li>
+        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
+        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
+        <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
+        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
+    </ul>
+</div>
+<p class="saltos p-1"></p>
+<div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
+    <a class="btn btn-secondary " href="/statistics/stock" role="button">Stock Info</a>
+    <a class="btn btn-secondary " href="/statistics/students" role="button">Students Info</a>
+    <a class="btn btn-secondary " href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
+    <a class="btn btn-secondary disabled " href="/statistics/userssearch" role="button">Students Search</a>
+</div>
+<p class="saltos p-1"></p>
+<div class="col-md-8 mx-auto">    
+    <div class="card">
+        <div class="card-header">
+            <h3>Busqueda estudiantes</h3>
+        </div>
+        <div class="card-body">
+            <form action="/books/edit-book/{{book._id}}?_method=PUT" method="POST">
+                <input type="hidden" name="_method" value="PUT">
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                    <label for="campo1" class="form-label">Alumnos</label>
+                    <select id="campo1" name="campo1" class="form-select">
+                        <option value="Now">Actuales</option>
+                        <option value="Old">Antiguos</option>
+                    </select>
+                    </div>
+                    <div class="col-md-4">
+                    <label for="campo2" class="form-label">Penalizaciones</label>
+                    <select id="campo2" name="campo2" class="form-select">
+                        <option value="Penalizado">Penalizado</option>
+                        <option value="Sinpenalizar">Sin Penalizar</option>
+                        <option value="vacio">No rellenar</option>
+                    </select>
+                    </div>
+                    
+                </div>
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                      <label for="campo2" class="form-label">Curso</label>
+                      <select id="course" name="course" class="form-select">
+                          <option value="">Selecciona una opción</option>
+                          <option>1ESO</option>
+                          <option>2ESO</option>
+                          <option>3ESO</option>
+                          <option>4ESO</option>
+                      </select>
+                    </div>
+                  <div class="col-md-4">
+                    <label for="campo2" class="form-label">Año</label>
+                    <input type="number" id="campo2" name="campo2" class="form-control" min="2015" max="2099">
+                  </div>
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Isbn:</label><br>
+                    <input type="text" name="isbn" class="form-control" placeholder="Isbn" value="{{book.isbn}}">
+                    <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Editorial:</label><br>
+                    <input type="text" name="editorial" class="form-control" placeholder="Editorial" value="{{book.editorial}}">
+                    <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Stock:</label><br>
+                    <input type="number" name="stock" class="form-control" placeholder="Stock" value="{{book.stock}}">
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Course:</label><br>
+                    <input type="text" name="course" class="form-control" placeholder="Course" value="{{book.course}}">                    
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Demand:</label><br>
+                    <input type="number" name="demand" class="form-control" placeholder="Demand" value="{{book.demand}}">
+                </div>
+                <div class="form-group p-1">
+                    <label for="fname">Penalization:</label><br>
+                    <input type="number" step="0.01" name="penalizacion" class="form-control" placeholder="Penalization" value="{{book.penalizacion}}">
+                </div>                
+                <div class="form-group p-1">
+                    <button class="btn btn-primary btn-block" type="submit">
+                        Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<body>
+
+    <div class="container">
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="POST" action="/ruta_del_servidor">
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="campo1">Campo 1</label>
+                <select class="form-control" id="campo1" name="campo1">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="campo2">Campo 2</label>
+                <select class="form-control" id="campo2" name="campo2">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="campo3">Campo 3</label>
+                <select class="form-control" id="campo3" name="campo3">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="campo4">Campo 4</label>
+                <select class="form-control" id="campo4" name="campo4">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="campo5">Campo 5</label>
+                <select class="form-control" id="campo5" name="campo5">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="campo6">Campo 6</label>
+                <select class="form-control" id="campo6" name="campo6">
+                  <option value="opcion1">Opción 1</option>
+                  <option value="opcion2">Opción 2</option>
+                  <option value="opcion3">Opción 3</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <label for="campo1" class="form-label">Campo 1</label>
+      <select id="campo1" name="campo1" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="campo2" class="form-label">Campo 2</label>
+      <select id="campo2" name="campo2" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <label for="campo3" class="form-label">Campo 3</label>
+      <select id="campo3" name="campo3" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="campo4" class="form-label">Campo 4</label>
+      <select id="campo4" name="campo4" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <label for="campo5" class="form-label">Campo 5</label>
+      <select id="campo5" name="campo5" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-12">
+      <label for="campo6" class="form-label">Campo 6</label>
+      <select id="campo6" name="campo6" class="form-select">
+        <option value="">Selecciona una opción</option>
+        <option value="opcion1">Opción 1</option>
+        <option value="opcion2">Opción 2</option>
+        <option value="opcion3">Opción 3</option>
+      </select>
+    </div>
+  </div>
+  
+
+    
+
+</body>

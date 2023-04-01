@@ -327,8 +327,7 @@ router.get('/statistics/stock', isAuthenticated, async (req, res) => {
 router.get('/statistics/students', isAuthenticated, async (req, res) => {
     if (req.user.role == 'admin') {
         const users = await User.find().sort({ course: 'desc' }).lean();
-        var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;;
-
+        var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;
         users.forEach(function (users) {
 
             if (users.course == '4ESO') {
@@ -350,6 +349,48 @@ router.get('/statistics/students', isAuthenticated, async (req, res) => {
         per2 = (cont2 / total) * 100;
         per1 = (cont1 / total) * 100;
         res.render('statistics/students-statistics', { users, cont4, cont3, cont2, cont1, total, per4, per3, per2, per1 });
+    } else {
+
+        console.log('no');
+    }
+});
+
+router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) => {
+    if (req.user.role == 'admin') {
+        var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;
+        const fecha = new Date(); // crea un objeto Date con la fecha y hora actuales
+        const anioActual = fecha.getFullYear();
+        const users = await User.find({
+            subscription: true,
+            adminpermision: true,
+            entregado: {
+              $elemMatch: { year: anioActual }
+            }
+        }).sort({ course: 'desc' }).lean();
+        
+          
+        //console.log(usuarios);
+        users.forEach(function (users) {
+
+            if (users.course == '4ESO') {
+                cont4 = cont4 + 1;
+            }
+            if (users.course == '3ESO') {
+                cont3++;
+            }
+            if (users.course == '2ESO') {
+                cont2++;
+            }
+            if (users.course == '1ESO') {
+                cont1++;
+            }
+        });
+        total = cont1 + cont2 + cont3 + cont4;
+        per4 = (cont4 / total) * 100;
+        per3 = (cont3 / total) * 100;
+        per2 = (cont2 / total) * 100;
+        per1 = (cont1 / total) * 100;
+        res.render('statistics/students-statisticspenalizados', { users, cont4, cont3, cont2, cont1, total, per4, per3, per2, per1 });
     } else {
 
         console.log('no');
@@ -516,6 +557,14 @@ router.put('/books/actualizarlibro/:id', isAuthenticated, async (req, res) => {
     );
     req.flash('success_msg', 'Libro actualizado en todos los usuarios');
     res.redirect('/books');
+});
+
+router.get('/statistics/userssearch', isAuthenticated, async (req, res) => {
+    if (req.user.role == 'admin') {
+        res.render('statistics/estudiantes-serach');
+    } else {
+        console.log('no');
+    }
 });
 
 router.delete('/books/delete/:id', isAuthenticated, async (req, res) => {

@@ -19,6 +19,7 @@
     <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Books Info</a>
     <a class="btn btn-secondary" href="/statistics/stock" role="button">Stock Info</a>
     <a class="btn btn-secondary" href="/statistics/students" role="button">Students Info</a>
+    <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
 </div>
 <p class="saltos p-1"></p>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
@@ -31,6 +32,7 @@
             <th>Course</th>
             <th>Stock</th>
             <th>Demand</th>
+            <th>Penalizacion</th>
         </thead>
         <tbody>
 
@@ -52,6 +54,9 @@
                 </td>
                 <td>
                     <p>{{demand}}</p>
+                </td>
+                <td>
+                    <p>{{penalizacion}}€</p>
                 </td>
 
             </tr>

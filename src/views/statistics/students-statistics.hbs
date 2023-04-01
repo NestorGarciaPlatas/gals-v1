@@ -19,6 +19,7 @@
     <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
     <a class="btn btn-secondary " href="/statistics/stock" role="button">Stock Info</a>
     <a class="btn btn-secondary disabled" href="/statistics/students" role="button">Students Info</a>
+    <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
 </div>
 <p class="saltos p-1"></p>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
@@ -28,8 +29,8 @@
             <th>Name</th>
             <th>Email</th>
             <th>Course</th>
-            <th>Car</th>
-            <th>Donation</th>
+            <th>Libros</th>
+            <th>Penalizaciones</th>
         </thead>
         <tbody>
 
@@ -49,7 +50,7 @@
                 </td>
                 <td>
                     {{#each entregado}}
-                    <p>ISBN: {{isbn}} Nota: {{estado}}</p>
+                    <p>ISBN: {{isbn}} Nota: {{estado}} Curso: {{course}} Año: {{year}} Precio: {{price}}€</p>
                     {{/each}}
                 </td>
 
