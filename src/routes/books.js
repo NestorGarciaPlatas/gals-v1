@@ -16,6 +16,7 @@ const uploadimage = multer({ storage: storageimage });
 const { isAuthenticated } = require('../helpers/auth');
 const User = require('../models/User');
 const Book = require('../models/Book');
+const Old = require('../models/Oldusers');
 
 router.get('/books/add', isAuthenticated, (req, res) => {
     if (req.user.role != 'admin') {
@@ -96,6 +97,58 @@ router.post('/books/search', isAuthenticated, async (req, res) => {
         res.render('books/the-books-order', { errors, books });
     }
 });
+//TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+router.post('/searchinfo', isAuthenticated, async (req, res) => {
+    const { campo1, campo2, course, campo3} = req.body;
+    console.log(campo1, campo2, course, campo3)
+    if (campo1 == 'Now' ) {
+        if (campo2 == 'Penalizado') {
+            const users = await User.find({
+                subscription: true,
+                adminpermision: true,
+                entregado: {
+                  $elemMatch: { year: campo3 }
+                },
+                course:course
+            }).lean();
+            var cont = users.length;
+            console.log(users, users.length)
+            res.render('statistics/result-search', { users,course,cont });
+            
+        } else if (campo2 == 'Sinpenalizar') {
+            const users = await User.find({
+                subscription: true,
+                adminpermision: true,
+                entregado: { $size: 0 },
+                course:course
+            }).lean()
+            var cont = users.length;
+            console.log(users ,users.length)
+            res.render('statistics/result-search', { users,course,cont });
+        } else {
+            const users = await User.find({
+                subscription: true,
+                adminpermision: true,
+                course:course
+            }).lean()
+            var cont = users.length;
+            console.log(users, users.length)
+            res.render('statistics/result-search', { users,course,cont });
+        }
+        
+    } else {
+        const users = await Old.find({
+            subscription: true,
+            adminpermision: true,
+            course:course
+        }).lean()
+        var cont = users.length;
+        console.log(users, users.length)
+        res.render('statistics/result-search', { users,course,cont });
+    }
+    //res.redirect('/statistics/userssearch')
+})
+//TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 router.get('/books', isAuthenticated, async (req, res) => {
@@ -354,7 +407,7 @@ router.get('/statistics/students', isAuthenticated, async (req, res) => {
         console.log('no');
     }
 });
-
+//TODO +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) => {
     if (req.user.role == 'admin') {
         var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;

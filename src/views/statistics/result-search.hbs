@@ -18,8 +18,8 @@
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
     <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
     <a class="btn btn-secondary " href="/statistics/stock" role="button">Stock Info</a>
-    <a class="btn btn-secondary disabled" href="/statistics/students" role="button">Students Info</a>
-    <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
+    <a class="btn btn-secondary " href="/statistics/students" role="button">Students Info</a>
+    <a class="btn btn-secondary " href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
     <a class="btn btn-secondary " href="/statistics/userssearch" role="button">Students Search</a>
 </div>
 <p class="saltos p-1"></p>
@@ -32,6 +32,7 @@
             <th>Course</th>
             <th>Libros</th>
             <th>Penalizaciones</th>
+            <th>Dinero</th>
         </thead>
         <tbody>
 
@@ -51,7 +52,12 @@
                 </td>
                 <td>
                     {{#each entregado}}
-                    <p>ISBN: {{isbn}} Nota: {{estado}} Curso: {{course}} Año: {{year}} Precio: {{price}}€</p>
+                    <p>ISBN: {{isbn}} Nota: {{estado}} Curso: {{course}} Año: {{year}}</p>
+                    {{/each}}
+                </td>
+                <td>
+                    {{#each entregado}}
+                    <p> Precio: {{price}}€</p>
                     {{/each}}
                 </td>
 
@@ -61,7 +67,7 @@
             <div class="card , mx-auto">
                 <div class="card-body">
                     <h1>
-                        <p class="lead">You don't need to buy any book, there is enough books for everybody.</p>
+                        <p class="lead">Ningun resultado coincide con la busqueda deseada.</p>
                     </h1>
                 </div>
             </div>
@@ -69,33 +75,14 @@
             <thead class="table-dark">
                 <th></th>
                 <th>Number</th>
-                <th>Percent</th>
+                <th></th>
+                <th></th>
                 <th></th>
                 <th></th>
             </thead>
             <tr>
-                <td>Total 4ESO</td>
-                <td>{{cont4}}</td>
-                <td>{{per4}}%</td>
-            </tr>
-            <tr>
-                <td>Total 3ESO</td>
-                <td>{{cont3}}</td>
-                <td>{{per3}}%</td>
-            </tr>
-            <tr>
-                <td>Total 2ESO</td>
-                <td>{{cont2}}</td>
-                <td>{{per2}}%</td>
-            </tr>
-            <tr>
-                <td>Total 1ESO</td>
-                <td>{{cont1}}</td>
-                <td>{{per1}}%</td>
-            </tr>
-            <tr>
-                <td>Total </td>
-                <td>{{total}}</td>
+                <td>Total {{course}}</td>
+                <td>{{cont}}</td>
             </tr>
         </tbody>
 

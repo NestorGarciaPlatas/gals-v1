@@ -78,7 +78,7 @@ router.get('/users', isAuthenticated, async (req, res) => {
         res.render('users/all-users', { users });
     } else {
         const user = await User.findById(req.user.id);
-        res.render('users/profile', { user });
+        res.render('users/profile', { user });//UGLY tengo que eliminar esta ruta no puede ser que un usuaruio pueda cambiarse el nombre y curso
     }
 });
 
