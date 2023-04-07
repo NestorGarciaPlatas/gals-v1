@@ -1,48 +1,54 @@
-<div class="col-md-5 mx-auto">
+<div class="col-md-6 mx-auto">
     <div class="card">
         <div class="card-header">
-            <h3>New Book</h3>
+            <h3 class="text-center">Nuevo Libro</h3>
         </div>
         <div class="card-body">
             <form action="/books/new-book" method="POST" enctype="multipart/form-data">
-                <div class="form-group p-1">
-                    <input type="text" name="title" class="form-control" placeholder="Title" autofocus>
+                <div class="form-group">
+                    <label for="title">Titulo</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <input type="text" name="isbn" class="form-control" placeholder="Isbn" autofocus>
-                    <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" id="isbn" name="isbn" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <input type="text" name="editorial" class="form-control" placeholder="Editorial" autofocus>
-                    <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
+                <div class="form-group">
+                    <label for="editorial">Editorial</label>
+                    <input type="text" id="editorial" name="editorial" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <input type="number" name="stock" class="form-control" placeholder="Stock" autofocus>
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+                    <input type="number" id="stock" name="stock" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <select class="form-control" name="course">
-                        <option>Select the course of the book:</option>
-                        <option>1ESO</option>
-                        <option>2ESO</option>
-                        <option>3ESO</option>
-                        <option>4ESO</option>
+                <div class="form-group">
+                    <label for="course">Curso</label>
+                    <select id="course" class="form-control" name="course" required>
+                        <option value="">Seleccionar el curso del libro:</option>
+                        <option value="1ESO">1ESO</option>
+                        <option value="2ESO">2ESO</option>
+                        <option value="3ESO">3ESO</option>
+                        <option value="4ESO">4ESO</option>
                     </select>
                 </div>
-                <div class="form-group p-1">
-                    <input type="number" name="demand" class="form-control" placeholder="Demand" autofocus>
+                <div class="form-group">
+                    <label for="demand">Demand</label>
+                    <input type="number" id="demand" name="demand" value="0" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <input type="number" step="0.01" name="penalizacion" class="form-control" placeholder="Penalization" autofocus>
+                <div class="form-group">
+                    <label for="penalizacion">Penalización</label>
+                    <input type="number" step="0.01" id="penalizacion" name="penalizacion" class="form-control" required>
                 </div>
-                <div class="form-group p-1">
-                    <label for="formFile" class="form-label">Select the image of the book</label>
-                    <input class="form-control" type="file" name="image" id="formFile">
-                </div>                
-                <div class="form-group p-1">
-                    <button class="btn btn-primary btn-block" type="submit">
-                        Save
-                    </button>
+                <div class="form-group">
+                    <label for="image">Imagen</label>
+                    <input type="file" id="image" name="image" class="form-control-file" required>
+                </div>              
+                <div class="form-group text-center">
+                    <a href="javascript:history.back()" class="btn btn-danger mr-3">Cancelar</a>
+                    <button class="btn btn-primary" type="submit">Guardar</button>
                 </div>
+
+                
             </form>
         </div>
     </div>

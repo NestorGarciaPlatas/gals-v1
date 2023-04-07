@@ -1,34 +1,43 @@
-<h1>Admin Petitions</h1>
-<div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Admin options
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/books">All Books</a></li>
-        <li><a class="dropdown-item" href="/users">All Users</a></li>
-        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
-        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
-        <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
-        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
-    </ul>
-</div>
+<h1>Peticiones de suscripción</h1>
+<nav class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fas fa-cog"></i> Opciones de administrador
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
+    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
+  </ul>
+</nav>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
-    <a class="btn btn-secondary" href="/users" role="button">Subscribed Users</a>
-    <a class="btn btn-secondary disable" href="#" role="button" aria-disabled="true">Subcribe petitions</a>
-    <a class="btn btn-secondary" href="/registerusers" role="button">Users with no subcription</a>
+    <a class="btn btn-secondary" href="/users" role="button">Usuarios suscritos</a>
+    <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Peticiones de suscripción</a>
+    <a class="btn btn-secondary" href="/registerusers" role="button">Usuarios sin suscripción</a>
 </div>
 <p class="saltos p-1"></p>
 {{#if users}}
-<form action="/books/allpetitions" method="post">
-    <button class="btn btn-success btn-block btn-sm" type="submit">
-        Acceptar todo
-    </button>
-</form>
+
+    <div class="btn-group mb-2" role="group" aria-label="Filtrar por curso">
+        <button type="button" class="btn btn-secondary" onclick="filterUsers('all')">Todos</a>
+        <button type="button" class="btn btn-secondary" onclick="filterUsers('1ESO')">1ESO</a>
+        <button type="button" class="btn btn-secondary" onclick="filterUsers('2ESO')">2ESO</a>
+        <button type="button" class="btn btn-secondary" onclick="filterUsers('3ESO')">3ESO</a>
+        <button type="button" class="btn btn-secondary" onclick="filterUsers('4ESO')">4ESO</a>
+    </div>
+    <div class="col-md-4 mb-2">
+        <form action="/books/allpetitions" method="post">
+            <button class="btn btn-success btn-block" type="submit">Aceptar todo</button>
+        </form>
+    </div>
+
 {{/if}}
-<div class="row">
+<div class="row" >
     {{#each users}}
-    <div class="col-md-3 p-2">
+    <div class="col-md-3 p-2 user {{course}}">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title d-flex justify-content-between align-items-center">
@@ -39,7 +48,7 @@
                 <p>{{course}}</p>
                 <p>{{penalty}}</p>
 
-                <form action="/users/delete/{{_id}}?_method=DELETE" method="post">
+                <form action="/users/delete/{{_id}}?_method=DELETE" method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este usuario?')">
                     <input type="hidden" name="_method" value="DELETE">
                     <button class="btn btn-danger btn-block btn-sm" type="submit">
                         Delete
@@ -48,7 +57,7 @@
                 <form action="/books/petitions/{{_id}}?_method=PUT" method="post">
                     <input type="hidden" name="_method" value="PUT">
                     <button class="btn btn-success btn-block btn-sm" type="submit">
-                        Accept
+                        Aceptar
                     </button>
                 </form>
             </div>
@@ -57,8 +66,31 @@
     {{else}}
     <div class="card , mx-auto">
         <div class="card-body">
-            <h1>There are not more petitions</h1>
+            <h1>No hay más peticiones</h1>
         </div>
     </div>
     {{/each}}
 </div>
+<script>
+function filterUsers(course) {
+    // Show all users if "Todos" is selected
+    if (course === 'all') {
+        const users = document.getElementsByClassName('user');
+        for (let i = 0; i < users.length; i++) {
+            users[i].style.display = 'block';
+        }
+    } else {
+        // Hide all users
+        const users = document.getElementsByClassName('user');
+        for (let i = 0; i < users.length; i++) {
+            users[i].style.display = 'none';
+        }
+
+        // Show users with the selected course
+        const courseUsers = document.getElementsByClassName(course);
+        for (let i = 0; i < courseUsers.length; i++) {
+            courseUsers[i].style.display = 'block';
+        }
+    }
+}
+</script>

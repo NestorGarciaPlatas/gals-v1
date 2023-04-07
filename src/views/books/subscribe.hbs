@@ -1,42 +1,58 @@
-<h1>Subscribtion page.</h1>
 <div class="row">
-    {{#each books}}
-    <div class="col-md-3 p-2">
-        <div class="card">
-            <img src="{{path}}" class="card-img-top p-2" height="160px" style="max-width:225px;max-height:160px">
-            <div class="card-body">
-                <h4 class="card-title d-flex justify-content-between align-items-center">
-                    {{title}}
-                </h4>
-                <p>{{isbn}}</p>
-                <p>{{editorial}}</p>
-                <p>{{course}}</p>
-                <p>{{penalizacion}}€</p>
-                <p align="center">
-
-                </p>
+  {{#each books}}
+  <div class="col-md-3 mb-4">
+    <div class="card h-100">
+      <img src="{{path}}" class="card-img-top p-2" alt="{{title}}" style="max-width: 225px; max-height: 160px;">
+      <div class="card-body">
+        <h5 class="card-title">{{title}}</h5>
+        <p class="card-text">{{isbn}}</p>
+        <p class="card-text">{{editorial}}</p>
+        <p class="card-text">{{course}}</p>
+        <p class="card-text">Penalty: {{penalizacion}}€</p>
+      </div>
+    </div>
+  </div>
+  {{else}}
+  {{#if sub}}
+    <div class="col-md-12 mb-4">
+    <div class="card">
+        <div class="card-body">
+        <h2 class="card-title text-center">Esperando a que el administrador apruebe tu solicitud</h2>
+        <p class="card-text">En estos momentos, el administrador del sistema está verificando tu solicitud de suscripción. Una vez que tu solicitud sea aceptada, podrás acceder a la página de los libros a los cuales estás suscrito . Por favor, ten en cuenta que el proceso de verificación puede tardar un tiempo, pero te aseguramos que haremos todo lo posible para que puedas acceder lo antes posible. ¡Gracias por tu paciencia!</p>
+        <hr>
+        <h4 class="card-title text-center mb-3">¿Tienes alguna pregunta?</h4>
+        <form action="mailto:contacto@gals.com" method="POST">
+            <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" class="form-control" id="name" name="name" required>
             </div>
+            <div class="form-group">
+            <label for="message">Mensaje</label>
+            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+        </form>
         </div>
     </div>
-    {{else}}
-    {{#if sub}}
-    <div class="card , mx-auto">
-        <div class="card-body">
-            <h1>Waitting admin permision.</h1>
-        </div>
     </div>
-    {{else}}
-    <div class="card , mx-auto">
-        <div class="card-body">
-            <h1>You are not subscribed yet.</h1>
-            <form action="/books/subscribe" method="POST" style="display:inline">
-                <button class="btn btn-primary " type="submit">
-                    Sunscribe
-                </button>
-            </form>
-        </div>
-    </div>
-    {{/if}}
 
-    {{/each}}
+  {{else}}
+  <h1 class="text-center my-5">Pagina de subcripción</h1>
+  <div class="col-md-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title text-center">Aún no estás suscrito</h2>
+         <p class="card-text">La suscripción a nuestro servicio de préstamo de libros es una gran oportunidad para acceder a una amplia variedad de libros sin tener que gastar grandes cantidades de dinero en la compra de cada uno. Cuando te suscribes, te comprometes a mantener los libros en buenas condiciones y devolverlos en la fecha acordada.
+
+Es importante tener en cuenta que, en caso de no respetar los libros o no cumplir con los términos de la suscripción, se aplicarán penalizaciones correspondientes a cada libro. Estas penalizaciones están diseñadas para asegurar que los libros estén disponibles y en buen estado para futuros suscriptores.
+
+Por lo tanto, te recomendamos tratar los libros con el cuidado y respeto que se merecen para que puedas disfrutar de una experiencia de lectura agradable y evitar penalizaciones. ¡Suscríbete hoy y disfruta de nuestra amplia selección de libros!</p>
+        <form action="/books/subscribe" method="POST" class="d-flex justify-content-center">
+          <button class="btn btn-primary" type="submit">Subscribete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+  {{/each}}
 </div>

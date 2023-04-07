@@ -1,22 +1,22 @@
-<h1>Admin Petitions</h1>     
-<div class="dropdown">
+<h1>Usuarios sin suscripción</h1>     
+<nav class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Admin options
+    <i class="fas fa-cog"></i> Opciones de administrador
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="/books">All Books</a></li>
-    <li><a class="dropdown-item" href="/users">All Users</a></li>    
-    <li><a class="dropdown-item" href="/books/add">New Book</a></li>
-    <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
-    <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
-    <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
+    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
+    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
   </ul>
-</div>
+</nav>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
-    <a class="btn btn-secondary" href="/users" role="button" >Subscribed Users</a>
-    <a class="btn btn-secondary" href="/petitions" role="button" >Subcribe petitions</a>
-    <a class="btn btn-secondary disable" href="#" role="button" aria-disabled="true">Users with no subcription</a>
+    <a class="btn btn-secondary" href="/users" role="button" >Usuarios suscritos</a>
+    <a class="btn btn-secondary" href="/petitions" role="button" >Peticiones de suscripción</a>
+    <a class="btn btn-secondary disabled" href="#" role="button" aria-disabled="true">Usuarios sin suscripción</a>
 </div>
 <div class="row">
     {{#each users}}

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Estadísticas Generales</title>
+    <style>
+        #canvas-holder {
+            width: 30%;
+            float: left;
+            margin: 20px;
+        }
+        body {
+			background-color: #f5f5f5;
+		}
+
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+			font-size: 32px;
+			font-weight: bold;
+		}
+
+		table {
+			border-collapse: collapse;
+			margin-top: 50px;
+			margin-left: auto;
+			margin-right: auto;
+			width: 80%;
+			background-color: white;
+			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		th, td {
+			padding: 10px;
+			border-bottom: 1px solid #ddd;
+			text-align: center;
+			font-size: 18px;
+		}
+
+		th {
+			background-color: #f2f2f2;
+			color: black;
+			font-weight: bold;
+		}
+
+		tr:hover {
+			background-color:#f5f5f5;
+		}
+        #studentschart {
+            width: 2%;
+            height: 10px;
+            margin: 10px;
+            float: right;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Estadísticas Generales</h1>
+    <nav class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fas fa-cog"></i> Opciones de administrador
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
+    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
+  </ul>
+</nav>
+<p class="saltos p-1"></p>
+<div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary disabled" href="/estadisticas" role="button">Estadisticas generales</a>
+    <a class="btn btn-secondary" href="/statistics" role="button" aria-disabled="true">Books Info</a>
+    <a class="btn btn-secondary" href="/statistics/stock" role="button">Stock Info</a>
+    <a class="btn btn-secondary" href="/statistics/students" role="button">Students Info</a>
+    <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
+    <a class="btn btn-secondary " href="/statistics/userssearch" role="button">Students Search</a>
+</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Número Total de Libros</th>
+                <th>Número Total de Libros por Curso</th>
+                <th>Dinero Recaudado por Año</th>
+                <th>Penalizaciones por curso</th>
+                <th>Número Total de Alumnos</th>
+                <th>Número de Alumnos por Curso</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{stats.totalBooks}}</td>
+                <td>
+                    {{#each stats.booksByCourse}}
+                    <p>{{_id}}: {{count}}</p>
+                    {{/each}}
+                </td>
+                <td>
+                    {{#each stats.revenueByYear}}
+                    <p>{{_id}}: {{revenue}}€</p>
+                    {{/each}}
+                </td>
+                <td>
+                    {{#each stats.penalizationsByCourse}}
+                    <p>{{_id}}: {{count}}</p>
+                    {{/each}}
+                </td>
+                <td>{{stats.totalStudents}}</td>
+                <td>
+                    {{#each stats.studentsByCourse}}
+                    <p>{{_id}}: {{count}}</p>
+                    {{/each}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+  <p class="saltos p-1"></p>
+  <p class="saltos p-1"></p>
+  <p class="saltos p-1"></p>
+    
+    <div style="display:flex; justify-content:space-between;">
+        <div style="flex-basis: 20%;">
+            <canvas id="booksChart"></canvas>
+        </div>
+        <div style="flex-basis: 20;">
+            <canvas id="revenueChart"></canvas>
+        </div>
+        <div style="flex-basis: 20;">
+            <canvas id="penaltiesChart"></canvas>
+        </div>        
+        <div style="flex-basis: 20%;">
+            <canvas id="studentsChart"></canvas>
+        </div>
+    </div>
+        
+
+    <script>
+
+
+        // Crear un array con los datos de penalizaciones
+        const penaltyData = [ {{#each stats.penalizationsByCourse}}        {{count}},        {{/each}}    ];
+
+        // Crear un array con los labels de curso
+        const courseLabels =[ {{#each stats.penalizationsByCourse}}        "{{_id}}",        {{/each}}    ];
+
+
+        // Configurar el gráfico
+        const configz = {
+        type: 'bar',
+        data: {
+            labels: courseLabels,
+            datasets: [{
+            label: 'Penalizaciones por curso',
+            data: penaltyData,
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+            yAxes: [{
+                ticks: {
+                beginAtZero: true,
+                precision: 0 // Mostrar números enteros en el eje y
+                },
+                scaleLabel: {
+                display: true,
+                labelString: 'Número de penalizaciones'
+                }
+            }],
+            xAxes: [{
+                scaleLabel: {
+                display: true,
+                labelString: 'Curso'
+                }
+            }]
+            }
+        }
+        };
+
+        // Obtener el canvas del gráfico
+        const ctxz = document.getElementById('penaltiesChart').getContext('2d');
+
+        // Crear el gráfico
+        new Chart(ctxz, configz);
+
+        
+
+
+        
+        var revenueData = [        {{#each stats.revenueByYear}}        {{revenue}},        {{/each}}    ];
+
+        var yearLabels = [        {{#each stats.revenueByYear}}        "{{_id}}",        {{/each}}    ];
+
+        var configr = {
+            type: 'bar',
+            data: {
+                labels: yearLabels,
+                datasets: [{
+                    label: 'Ingresos por año',
+                    data: revenueData,
+                    backgroundColor: 'rgb(54, 162, 235)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            callback: function(value, index, values) {
+                                return '$' + value;
+                            }
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Ingresos'
+                        }
+                    }],
+                    xAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Año'
+                        }
+                    }]
+                }
+            }
+        };
+
+    var ctxr = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctxr, configr);
+
+        var booksData = [
+            {{#each stats.booksByCourse}}
+            {
+                value: {{count}},
+                label: "{{_id}}"
+            },
+            {{/each}}
+        ];
+
+        var config = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: booksData,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)',
+                        'rgb(255, 159, 64)'
+                    ]
+                }],
+                labels: booksData.map(data => data.label)
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Libros por Curso'
+                }
+            }
+        };
+
+        var ctx = document.getElementById('booksChart').getContext('2d');
+        new Chart(ctx, config);
+
+        var studentsData = [
+            {{#each stats.studentsByCourse}}
+            {
+                value: {{count}},
+                label: "{{_id}}"
+            },
+            {{/each}}
+        ];
+
+        var configs = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: studentsData,
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(153, 102, 255)',
+                        'rgb(255, 159, 64)'
+                    ]
+                }],
+                labels: studentsData.map(data => data.label)
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Libros por Curso'
+                }
+            }
+        };
+
+        var ctxs = document.getElementById('studentsChart').getContext('2d');
+        new Chart(ctxs, configs);
+    </script>
+</body>
+</html>
+
+

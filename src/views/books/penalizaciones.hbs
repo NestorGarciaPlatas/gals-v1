@@ -1,45 +1,40 @@
 <div class="row">
-    {{#each users}}
-        {{#if email}}
-            <h1>Penalizaciones de {{name}}</h1>
-            <table class="table" id="tbl_exporttable_to_xls">
-                <thead class="table-dark">
-                    <th>Isbn</th>
-                    <th>Motivo</th>
-                    <th>Course</th>
-                    <th>Precio</th>
-                    <th>Año</th>
-                </thead>
-                <tbody>
-                    {{#each entregado}}
-                    <tr>
-                        <td>{{isbn}}</td>
-                        <td>
-                            <p>{{estado}}</p>
-                        </td>
-                        <td>
-                            <p>{{course}}</p>
-                        </td>
-                        <td>
-                            <p>{{price}}€</p>
-                        </td>
-                        <td>
-                            <p>{{year}}</p>
-                        </td>
-
-                    </tr>
-
-                    {{else}}
-                    <div class="card , mx-auto">
-                        <div class="card-body">
-                            <p class="lead">No tienes penalizaciones.</p>
-                        </div>
-                    </div>
-                    {{/each}}
-                
-                </tbody>
-
-            </table>
-        {{/if}}
-    {{/each}}
+  {{#each users}}
+    {{#if email}}
+      <h1>Penalizaciones de {{name}}</h1>
+      <table class="table table-striped table-hover" id="tbl_exporttable_to_xls">
+        <thead class="thead-dark">
+          <tr>
+            <th>ISBN</th>
+            <th>Motivo</th>
+            <th>Curso</th>
+            <th>Precio</th>
+            <th>Año</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each entregado}}
+          <tr>
+            <td>{{isbn}}</td>
+            <td>{{estado}}</td>
+            <td>{{course}}</td>
+            <td>{{price}}€</td>
+            <td>{{year}}</td>
+          </tr>
+          {{/each}}
+          {{#unless entregado}}
+          <tr>
+            <td colspan="5">
+              <div class="card mx-auto">
+                <div class="card-body">
+                  <p class="lead">No tienes penalizaciones.</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {{/unless}}
+        </tbody>
+      </table>
+    {{/if}}
+  {{/each}}
 </div>

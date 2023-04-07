@@ -1,25 +1,67 @@
 <html>
+<style>
+        body {
+			background-color: #f5f5f5;
+		}
 
+		h1 {
+			text-align: center;
+			margin-top: 50px;
+			font-size: 32px;
+			font-weight: bold;
+		}
+
+		table {
+			border-collapse: collapse;
+			margin-top: 50px;
+			margin-left: auto;
+			margin-right: auto;
+			width: 80%;
+			background-color: white;
+			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+			border-radius: 10px;
+			overflow: hidden;
+		}
+		th, td {
+			padding: 10px;
+			border-bottom: 1px solid #ddd;
+			text-align: center;
+			font-size: 18px;
+            font-weight: white;
+		}
+
+		th {
+			background-color: #f2f2f2;
+			color: rgb(211, 208, 208);
+			font-weight: bold;
+		}
+
+		tr:hover {
+			background-color:#f5f5f5;
+		}
+</style>
 <h1>Admin Statistics</h1>
-<div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Admin options
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/books">All Books</a></li>
-        <li><a class="dropdown-item" href="/users">All Users</a></li>
-        <li><a class="dropdown-item" href="/books/add">New Book</a></li>
-        <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
-        <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
-        <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
-    </ul>
-</div>
+<nav class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="fas fa-cog"></i> Opciones de administrador
+  </button>
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
+    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
+  </ul>
+</nav>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
+    <a class="btn btn-secondary " href="/estadisticas" role="button">Estadisticas generales</a>
     <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Books Info</a>
     <a class="btn btn-secondary disabled" href="/statistics/stock" role="button">Stock Info</a>
     <a class="btn btn-secondary" href="/statistics/students" role="button">Students Info</a>
     <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
+    <a class="btn btn-secondary " href="/statistics/userssearch" role="button">Students Search</a>
 </div>
 <p class="saltos p-1"></p>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>

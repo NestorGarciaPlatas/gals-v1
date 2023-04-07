@@ -1,40 +1,62 @@
-<h1>Admin All Books</h1>     
-<div class="dropdown">
+<style>
+    h1 {
+			text-align: center;
+			margin-top: 50px;
+			font-size: 32px;
+			font-weight: bold;
+		}
+</style>
+<h1>Administrador de los libros</h1>     
+<nav class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Admin options
+    <i class="fas fa-cog"></i> Opciones de administrador
   </button>
   <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="/books">All Books</a></li>
-    <li><a class="dropdown-item" href="/users">All Users</a></li>    
-    <li><a class="dropdown-item" href="/books/add">New Book</a></li>
-    <li><a class="dropdown-item" href="/statistics">Statistics</a></li>
-    <li><a class="dropdown-item" href="/upload">Actualize Data Base</a></li>
-    <li><a class="dropdown-item" href="/users/signup">SignUp</a></li>
+    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
+    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
   </ul>
+</nav>
+
+<p class="saltos p-1"></p>
+
+{{#if books}}
+<div class="btn-group mb-2" role="group" aria-label="Filtrar por curso">
+	  <button type="button" class="btn btn-secondary" onclick="filterBooks('all')">Todos</button>
+	  <button type="button" class="btn btn-secondary" onclick="filterBooks('1ESO')">1ESO</button>
+	  <button type="button" class="btn btn-secondary" onclick="filterBooks('2ESO')">2ESO</button>
+	  <button type="button" class="btn btn-secondary" onclick="filterBooks('3ESO')">3ESO</button>
+	  <button type="button" class="btn btn-secondary" onclick="filterBooks('4ESO')">4ESO</button>
 </div>
 <p class="saltos p-1"></p>
-{{#if books}}
 <form action="/books/demanda" method="post">
-    <button class="btn btn-success btn-block btn-sm" type="submit">
+    <button class="btn btn-success btn-block btn-sm mb-2 float-right" type="submit">
         Actualizar demanda
     </button>
 </form>
+
 {{/if}}
+
 <div class="row">    
     {{#each books}}
-        <div class="col-md-3 p-2">
-            <div class="card">
-                <img src="{{path}}" class="card-img-top p-2" height="160px" style="max-width:225px;max-height:160px">
-                <div class="card-body">
-                    <h5 class="card-title d-flex justify-content-between align-items-center">
-                        {{title}} <a href="/books/edit/{{_id}}"><i class="fas fa-edit"></i></a>
-                    </h5>                    
+	        <div class="col-md-3 p-2 book {{course}}">
+	            <div class="card">
+	                <img src="{{path}}" class="card-img-top p-2" height="160px" style="object-fit: cover"><!--style="max-width:225px;max-height:160px"-->
+	                <div class="card-body">
+	                    <h5 class="card-title d-flex justify-content-between align-items-center">
+	                        {{title}} <a href="/books/edit/{{_id}}"><i class="fas fa-edit"></i></a>
+	                    </h5>                    
                     <p>{{isbn}}</p>
                     <p>{{editorial}}</p>                    
                     <p>{{stock}}</p>
                     <p>{{course}}</p>
                     <p>{{demand}}</p>
                     <p>{{penalizacion}}€</p>
+                </div>
+                <div class="card-footer">
                     <form action="/books/delete/{{_id}}?_method=DELETE" method="post">
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger btn-block btn-sm" type="submit">
@@ -55,10 +77,33 @@
     {{else}}
         <div class="card , mx-auto">
             <div class="card-body">
-                <h1>Hello</h1>
-                <p class="lead">There are not books yet.</p>
-                <a href="/books/add" class="btn btn-success btn-block"> Creat one!</a>
+                <h1>Hola</h1>
+                <p class="lead">Aún no has añadio ningun libro.</p>
+                <a href="/books/add" class="btn btn-success btn-block"> Añadir libro!</a>
             </div>
         </div>    
     {{/each}}
 </div>
+<script>
+    function filterBooks(course) {
+        // Show all books if "Todos" is selected
+        if (course === 'all') {
+            const books = document.getElementsByClassName('book');
+            for (let i = 0; i < books.length; i++) {
+                books[i].style.display = 'block';
+            }
+        } else {
+            // Hide all books
+            const books = document.getElementsByClassName('book');
+            for (let i = 0; i < books.length; i++) {
+                books[i].style.display = 'none';
+            }
+            
+            // Show books with the selected course
+            const courseBooks = document.getElementsByClassName(course);
+            for (let i = 0; i < courseBooks.length; i++) {
+                courseBooks[i].style.display = 'block';
+            }
+        }
+    }
+</script>

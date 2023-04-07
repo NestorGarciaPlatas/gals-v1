@@ -103,7 +103,8 @@ router.post('/searchinfo', isAuthenticated, async (req, res) => {
     console.log(campo1, campo2, course, campo3)
     if (campo1 == 'Now' ) {
         if (campo2 == 'Penalizado') {
-            const users = await User.find({
+            if (campo3) {
+                const users = await User.find({
                 subscription: true,
                 adminpermision: true,
                 entregado: {
@@ -114,7 +115,20 @@ router.post('/searchinfo', isAuthenticated, async (req, res) => {
             var cont = users.length;
             console.log(users, users.length)
             res.render('statistics/result-search', { users,course,cont });
-            
+            } else {
+                const users = await User.find({
+                    subscription: true,
+                    adminpermision: true,
+                    entregado: {
+                      $exists: true,
+                      $not: { $size: 0 }
+                    },
+                    course: course
+                }).lean();
+                var cont = users.length;
+                console.log(users, users.length)
+                res.render('statistics/result-search', { users,course,cont });
+            }            
         } else if (campo2 == 'Sinpenalizar') {
             const users = await User.find({
                 subscription: true,
@@ -137,17 +151,123 @@ router.post('/searchinfo', isAuthenticated, async (req, res) => {
         }
         
     } else {
-        const users = await Old.find({
-            subscription: true,
-            adminpermision: true,
-            course:course
-        }).lean()
-        var cont = users.length;
-        console.log(users, users.length)
-        res.render('statistics/result-search', { users,course,cont });
+        if (campo2 == 'Penalizado') {
+            if (campo3) {
+                const users = await Old.find({
+                subscription: true,
+                adminpermision: true,
+                entregado: {
+                  $elemMatch: { year: campo3 }
+                },
+                course:course
+            }).lean();
+            var cont = users.length;
+            console.log(users, users.length)
+            res.render('statistics/result-search', { users,course,cont });
+            } else {
+                const users = await Old.find({
+                    subscription: true,
+                    adminpermision: true,
+                    entregado: {
+                      $exists: true,
+                      $not: { $size: 0 }
+                    },
+                    course: course
+                }).lean();
+                var cont = users.length;
+                console.log(users, users.length)
+                res.render('statistics/result-search', { users,course,cont });
+            }            
+        } else if (campo2 == 'Sinpenalizar') {
+            const users = await Old.find({
+                subscription: true,
+                adminpermision: true,
+                entregado: { $size: 0 },
+                course:course
+            }).lean()
+            var cont = users.length;
+            console.log(users ,users.length)
+            res.render('statistics/result-search', { users,course,cont });
+        } else {
+            const users = await Old.find({
+                subscription: true,
+                adminpermision: true,
+                course:course
+            }).lean()
+            var cont = users.length;
+            console.log(users, users.length)
+            res.render('statistics/result-search', { users,course,cont });
+        }
     }
     //res.redirect('/statistics/userssearch')
 })
+
+router.get('/estadisticas', isAuthenticated, async (req, res) => {
+    const stats = {};
+
+    // Total de libros
+    const totalBooks = await Book.countDocuments();
+    stats.totalBooks = totalBooks;
+
+    // Total de libros por curso
+    const booksByCourse = await Book.aggregate([
+    {
+        $group: {
+        _id: '$course',
+        count: { $sum: 1 }
+        }
+    }
+    ]);
+    stats.booksByCourse = booksByCourse;
+
+    // Total de alumnos
+    const totalStudents = await User.countDocuments();
+    stats.totalStudents = totalStudents;
+
+    // Total de alumnos por curso
+    const studentsByCourse = await User.aggregate([
+    {
+        $group: {
+        _id: '$course',
+        count: { $sum: 1 }
+        }
+    }
+    ]);
+    stats.studentsByCourse = studentsByCourse;
+
+    // Dinero recaudado por año
+    const revenueByYear = await User.aggregate([
+    {
+        $unwind: '$entregado'
+    },
+    {
+        $group: {
+        _id: '$entregado.year',
+        revenue: { $sum: '$entregado.price' }
+        }
+    }
+    ]);
+    stats.revenueByYear = revenueByYear;
+    // Cantidad de penalizaciones por curso
+    const penalizationsByCourse = await User.aggregate([
+        {
+          $match: {
+            "entregado.estado": { $in: ["Disrepair", "NoRecived"] }
+          }
+        },
+        {
+          $group: {
+            _id: "$course",
+            count: { $sum: 1 }
+          }
+        }
+      ]);
+      stats.penalizationsByCourse = penalizationsByCourse;
+    console.log(stats);
+    // Aquí iría el código para obtener las estadísticas
+    res.render('statistics/general-stats', { stats });
+  });
+  
 //TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
