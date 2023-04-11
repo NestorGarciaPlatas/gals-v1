@@ -8,6 +8,8 @@ const flash = require('connect-flash');
 const passport = require('passport');
 //const multer = require('multer');
 //const uuid = require('uuid').v4;
+const moment = require('moment');
+
 
 
 //Initiliazations
@@ -22,7 +24,18 @@ app.engine('.hbs', exphbs.engine({
     defaultLayout: 'main',
     layoutDir: path.join(app.get('views'), 'layouts'),
     partialsDir: path.join(app.get('views'), 'partials'),
-    extname: '.hbs'
+    extname: '.hbs',
+    helpers: {
+        eq: function (v1, v2) {
+            return v1 === v2;
+        },
+        momentformatdate: function(date, format) {
+            return moment(date, "YYYY-MM-DD").format(format);
+        }  
+        
+        
+        
+    }
 
 }));
 
@@ -60,7 +73,7 @@ multer({ storage: storageimage }).single('image');*/
 app.use(multer({ storage: storage2 }).single('excelFile'));*/
 
 //Global Variables
-app.use((req, res, next) =>{
+app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');

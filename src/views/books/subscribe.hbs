@@ -1,14 +1,18 @@
+{{#if books}}
+<h1>Libros suscritos</h1>
+<p class="saltos p-1"></p>
+{{/if}}
 <div class="row">
   {{#each books}}
   <div class="col-md-3 mb-4">
     <div class="card h-100">
-      <img src="{{path}}" class="card-img-top p-2" alt="{{title}}" style="max-width: 225px; max-height: 160px;">
+      <img src="{{path}}" class="card-img-top p-2" alt="{{title}}" height="160px" style="object-fit: cover">
       <div class="card-body">
         <h5 class="card-title">{{title}}</h5>
         <p class="card-text">{{isbn}}</p>
         <p class="card-text">{{editorial}}</p>
         <p class="card-text">{{course}}</p>
-        <p class="card-text">Penalty: {{penalizacion}}€</p>
+        <p class="card-text">Penalización: {{penalizacion}}€</p>
       </div>
     </div>
   </div>
@@ -37,7 +41,7 @@
     </div>
 
   {{else}}
-  <h1 class="text-center my-5">Pagina de subcripción</h1>
+  <h1 class="text-center my-5">Pagina de suscripción</h1>
   <div class="col-md-12 mb-4">
     <div class="card">
       <div class="card-body">

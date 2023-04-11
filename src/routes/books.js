@@ -226,14 +226,21 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
 
     // Total de alumnos por curso
     const studentsByCourse = await User.aggregate([
-    {
-        $group: {
-        _id: '$course',
-        count: { $sum: 1 }
+        {
+          $match: {
+            subscription: true,
+            adminpermision: true
+          }
+        },
+        {
+          $group: {
+            _id: '$course',
+            count: { $sum: 1 }
+          }
         }
-    }
-    ]);
-    stats.studentsByCourse = studentsByCourse;
+      ]);
+      stats.studentsByCourse = studentsByCourse;
+      
 
     // Dinero recaudado por año
     const revenueByYear = await User.aggregate([
@@ -251,13 +258,16 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
     // Cantidad de penalizaciones por curso
     const penalizationsByCourse = await User.aggregate([
         {
+            $unwind: "$entregado"
+          },
+        {
           $match: {
-            "entregado.estado": { $in: ["Disrepair", "NoRecived"] }
+            "entregado.estado": { $in: ["MalEstado", "NoRecibido"] }
           }
         },
         {
           $group: {
-            _id: "$course",
+            _id: "$entregado.course",
             count: { $sum: 1 }
           }
         }
@@ -533,14 +543,44 @@ router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) 
         var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;
         const fecha = new Date(); // crea un objeto Date con la fecha y hora actuales
         const anioActual = fecha.getFullYear();
-        const users = await User.find({
+        /*const users = await User.find({
             subscription: true,
             adminpermision: true,
             entregado: {
               $elemMatch: { year: anioActual }
             }
-        }).sort({ course: 'desc' }).lean();
-        
+        }).sort({ course: 'desc' }).lean();*/
+        const users = await User.aggregate([
+            // Filtrar los documentos por el año actual en entregado
+            { $match: {
+                subscription: true,
+                adminpermision: true,
+                "entregado.year": anioActual
+              }
+            },
+            // Desagregar los documentos por entregado
+            { $unwind: "$entregado" },
+            // Filtrar los elementos de entregado que no coincidan con el año actual
+            { $match: {
+                "entregado.year": anioActual
+              }
+            },
+            // Volver a agrupar los documentos
+            { $group: {
+                _id: "$_id",
+                name: { $first: "$name" },
+                email: { $first: "$email" },
+                course: { $first: "$course" },
+                car: { $first: "$car" },
+                subscription: { $first: "$subscription" },
+                adminpermision: { $first: "$adminpermision" },
+                entregado: { $push: "$entregado" }
+              }
+            },
+            // Ordenar los documentos por course en orden descendente
+            { $sort: { course: -1 } }
+          ]);
+          
           
         //console.log(usuarios);
         users.forEach(function (users) {
@@ -563,7 +603,9 @@ router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) 
         per3 = (cont3 / total) * 100;
         per2 = (cont2 / total) * 100;
         per1 = (cont1 / total) * 100;
-        res.render('statistics/students-statisticspenalizados', { users, cont4, cont3, cont2, cont1, total, per4, per3, per2, per1 });
+        const theyear = new Date().getFullYear();
+        console.log(theyear)
+        res.render('statistics/students-statisticspenalizados', { users,theyear, cont4, cont3, cont2, cont1, total, per4, per3, per2, per1 });
     } else {
 
         console.log('no');

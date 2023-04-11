@@ -73,18 +73,18 @@
 </nav>
 <p class="saltos p-1"></p>
 <div class="btn-group" style="text-align: center" role="group" aria-label="Basic example">
-    <a class="btn btn-secondary disabled" href="/estadisticas" role="button">Estadisticas generales</a>
-    <a class="btn btn-secondary" href="/statistics" role="button" aria-disabled="true">Books Info</a>
-    <a class="btn btn-secondary" href="/statistics/stock" role="button">Stock Info</a>
-    <a class="btn btn-secondary" href="/statistics/students" role="button">Students Info</a>
-    <a class="btn btn-secondary" href="/statistics/studentspenalizados" role="button">Students Penalizados</a>
-    <a class="btn btn-secondary " href="/statistics/userssearch" role="button">Students Search</a>
+    <a class="btn btn-secondary disabled " href="/estadisticas" role="button">Estadisticas generales</a>
+    <a class="btn btn-secondary " href="/statistics" role="button" aria-disabled="true">Info Libros</a>
+    <a class="btn btn-secondary " href="/statistics/stock" role="button">Stock Info</a>
+    <a class="btn btn-secondary " href="/statistics/students" role="button">Info Estudiantes</a>
+    <a class="btn btn-secondary " href="/statistics/studentspenalizados" role="button">Estudiantes Penalizados</a>
+    <a class="btn btn-secondary " href="/statistics/userssearch" role="button">Busqueda Estudiantes</a>
 </div>
     <table>
         <thead>
             <tr>
-                <th>Número Total de Libros</th>
                 <th>Número Total de Libros por Curso</th>
+                <th>Número Total de Libros</th>
                 <th>Dinero Recaudado por Año</th>
                 <th>Penalizaciones por curso</th>
                 <th>Número Total de Alumnos</th>
@@ -93,12 +93,12 @@
         </thead>
         <tbody>
             <tr>
-                <td>{{stats.totalBooks}}</td>
                 <td>
                     {{#each stats.booksByCourse}}
                     <p>{{_id}}: {{count}}</p>
                     {{/each}}
                 </td>
+                <td>{{stats.totalBooks}}</td>
                 <td>
                     {{#each stats.revenueByYear}}
                     <p>{{_id}}: {{revenue}}€</p>

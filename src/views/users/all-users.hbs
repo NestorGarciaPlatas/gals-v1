@@ -54,10 +54,10 @@
                     <form action="/users/delete/{{_id}}?_method=DELETE" method="post" onsubmit="return confirm('¿Está seguro de que desea eliminar este usuario?')">
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger btn-block btn-sm mb-2" type="submit">
-                            Delete
+                            Eliminar
                         </button>
                     </form>
-                    <a href="/users/penalty/{{_id}}" class="btn btn-dark btn-sm mb-2" tabindex="-1" role="button" aria-disabled="true" onclick="return confirm('¿Estás seguro de que quieres aplicar una penalización a este usuario?')">Penalty</a>
+                    <a href="/users/penalty/{{_id}}" class="btn btn-dark btn-sm mb-2" tabindex="-1" role="button" aria-disabled="true" onclick="return confirm('¿Estás seguro de que quieres aplicar una penalización a {{name}}?')">Penalizar</a>
                 </div>
             </div>
         </div>
