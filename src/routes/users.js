@@ -74,7 +74,28 @@ router.post('/users/signup', async (req, res) => {
 router.get('/users', isAuthenticated, async (req, res) => {
 
     if (req.user.role == 'admin') {
-        const users = await User.find({ subscription: true }).sort({ date: 'desc' }).lean();
+        const users = await User.aggregate([
+            {
+              $match: { subscription: true }
+            },
+            {
+              $addFields: {
+                roleWeight: {
+                  $switch: {
+                    branches: [
+                      { case: { $eq: ['$role', 'admin'] }, then: 1 },
+                      { case: { $eq: ['$role', 'customer'] }, then: 2 }
+                    ],
+                    default: 3
+                  }
+                }
+              }
+            },
+            {
+              $sort: { roleWeight: 1, course: -1 }
+            }
+          ]).exec();          
+
         res.render('users/all-users', { users });
     } else {
         const user = await User.findById(req.user.id);
@@ -107,6 +128,15 @@ router.put('/users/edit-profile/:id', isAuthenticated, async (req, res) => {
     res.redirect('/users')
 });
 
+router.put('/users/edit-suscripcion/:id', isAuthenticated, async (req, res) => {
+    // Actualiza el documento con los nuevos valores y establece adminpermision en false
+    await User.findByIdAndUpdate(req.params.id, { adminpermision: false });
+    
+    req.flash('success_msg', 'Usuario actualizado satisfactoriamente');
+    res.redirect('/petitions');
+});
+
+
 router.delete('/users/delete/:id', isAuthenticated, async (req, res) => {
     await User.findByIdAndDelete(req.params.id);
     req.flash('success_msg', 'User delited satisfactoriamente');
@@ -119,7 +149,7 @@ router.get('/users/penalty/:id', isAuthenticated, async (req, res) => {
     res.render('users/penalty', { user, books });
 });
 
-router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
+/*router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
     const user = await User.findById(req.params.id).lean();
     const currentYear = new Date().getFullYear();
     const { idbook, estado } = req.body;
@@ -159,7 +189,62 @@ router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
         console.log(entregado);
     }
     //mirar este metodo es lo mismo put('/books/donation/:id'
+});*/
+
+router.put('/users/penalty2/:id', isAuthenticated, async (req, res) => {
+    const user = await User.findById(req.params.id).lean();
+    const currentYear = new Date().getFullYear();
+    const { idbook, estado } = req.body;
+    const book = await Book.findById(idbook).lean();
+    const errors = [];
+    const success_mssg = [];
+    const books = await Book.find({ course: user.course }).sort({ date: 'desc' }).lean();
+
+    if (estado === 'Nopenalizado') {
+        // Encontrar el índice del libro con el mismo ISBN en el array entregado
+        const bookIndex = user.entregado.findIndex(don => don.isbn === book.isbn);
+
+        if (bookIndex !== -1) {
+            // Eliminar el libro de la lista entregado y actualizar el stock del libro
+            user.entregado.splice(bookIndex, 1);
+            await Book.findByIdAndUpdate(idbook, { $inc: { stock: 1 } });
+            await User.findByIdAndUpdate(user._id, { entregado: user.entregado });
+            success_mssg.push({ text: 'Libro eliminado correctamente de la lista de penalizados' });
+        } else {
+            errors.push({ text: 'No se encontró el libro en la lista de penalizados' });
+        }
+    } else {
+        // Código existente para penalizar el libro
+        const stock = book.stock - 1;
+        const entregado = [{
+            isbn: book.isbn,
+            estado: estado,
+            price: book.penalizacion,
+            course: book.course,
+            year: currentYear
+        }];
+        var isbnEntregado = false;
+        const don = user.entregado;
+        don.forEach(function (don) {
+            if (book.isbn == don.isbn) {
+                isbnEntregado = true;
+            }
+        });
+        if (isbnEntregado) {
+            errors.push({ text: 'No puedes penalizar el mismo libro 2 veces' });
+            //res.render('users/penalty', { errors, books, user });
+        } else {
+            const entregado2 = user.entregado;
+            entregado.push.apply(entregado, entregado2);
+            await Book.findByIdAndUpdate(idbook, { stock });
+            await User.findByIdAndUpdate(user._id, { entregado });
+            success_mssg.push({ text: 'Penalizado correctamente' });
+            console.log(entregado);
+        }
+    }
+    res.render('users/penalty', { books, user, errors, success_mssg });
 });
+
 
 
 router.get('/upload', isAuthenticated, async (req, res) => {

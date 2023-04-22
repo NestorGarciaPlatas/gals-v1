@@ -216,12 +216,21 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
         _id: '$course',
         count: { $sum: 1 }
         }
+    },
+    {
+        $sort: {
+            _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
+        }
     }
     ]);
     stats.booksByCourse = booksByCourse;
 
     // Total de alumnos
-    const totalStudents = await User.countDocuments();
+    const totalStudents = await User.countDocuments({
+        adminpermision: true,
+        subscription: true,
+        role: 'customer'
+    });
     stats.totalStudents = totalStudents;
 
     // Total de alumnos por curso
@@ -237,6 +246,11 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
             _id: '$course',
             count: { $sum: 1 }
           }
+        },
+        {
+            $sort: {
+                _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
+            }
         }
       ]);
       stats.studentsByCourse = studentsByCourse;
@@ -251,6 +265,11 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
         $group: {
         _id: '$entregado.year',
         revenue: { $sum: '$entregado.price' }
+        }
+    },
+    {
+        $sort: {
+            _id: 1 // Ordenar por el campo _id (año) en orden ascendente
         }
     }
     ]);
@@ -270,6 +289,11 @@ router.get('/estadisticas', isAuthenticated, async (req, res) => {
             _id: "$entregado.course",
             count: { $sum: 1 }
           }
+        },
+        {
+            $sort: {
+                _id: 1 // Ordenar por el campo _id (año) en orden ascendente
+            }
         }
       ]);
       stats.penalizationsByCourse = penalizationsByCourse;
@@ -318,7 +342,12 @@ router.get('/petitions', isAuthenticated, async (req, res) => {
 
 router.get('/registerusers', isAuthenticated, async (req, res) => {
     if (req.user.role == 'admin') {
-        const users = await User.find({ adminpermision: false }).sort({ date: 'desc' }).lean();
+        //const users = await User.find({ adminpermision: false }).sort({ date: 'desc' }).lean();
+        const users = await User.find({ 
+            adminpermision: false, 
+            role: 'customer' 
+        }).sort({ date: 'desc' }).lean();
+        
         res.render('users/registerusers', { users });
     } else {
         console.log('no');
@@ -509,7 +538,12 @@ router.get('/statistics/stock', isAuthenticated, async (req, res) => {
 
 router.get('/statistics/students', isAuthenticated, async (req, res) => {
     if (req.user.role == 'admin') {
-        const users = await User.find().sort({ course: 'desc' }).lean();
+        const users = await User.find({ 
+            adminpermision: true,
+            subscription: true,
+            role: 'customer' 
+        }).sort({ course: 'desc' }).lean();
+        
         var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;
         users.forEach(function (users) {
 

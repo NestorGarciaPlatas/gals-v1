@@ -55,6 +55,8 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>-->
+
 </head>
 <body>
     <h1>Estadísticas Generales</h1>
@@ -163,25 +165,31 @@
         },
         options: {
             responsive: true,
-            scales: {
-            yAxes: [{
-                ticks: {
-                beginAtZero: true,
-                precision: 0 // Mostrar números enteros en el eje y
-                },
-                scaleLabel: {
-                display: true,
-                labelString: 'Número de penalizaciones'
-                }
-            }],
-            xAxes: [{
-                scaleLabel: {
-                display: true,
-                labelString: 'Curso'
-                }
-            }]
+            plugins: {
+                    title: {
+                        display: true,
+                        text: 'Penalizaciones por curso'
+                    }
+                }/*,
+                scales: {
+                    y: {
+                        ticks: {
+                            beginAtZero: true,
+                            precision: 0 // Mostrar números enteros en el eje y
+                        },
+                        title: {
+                            display: true,
+                            text: 'Número de penalizaciones'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Curso'
+                        }
+                    }
+                }*/
             }
-        }
         };
 
         // Obtener el canvas del gráfico
@@ -212,6 +220,12 @@
             },
             options: {
                 responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Dinero Recaudado por Año'
+                    }
+                },
                 legend: {
                     display: false
                 },
@@ -268,9 +282,11 @@
             },
             options: {
                 responsive: true,
-                title: {
-                    display: true,
-                    text: 'Libros por Curso'
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Número Total de Libros por Curso'
+                    }
                 }
             }
         };
@@ -305,9 +321,11 @@
             },
             options: {
                 responsive: true,
-                title: {
-                    display: true,
-                    text: 'Libros por Curso'
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Número de Alumnos por Curso'
+                    }
                 }
             }
         };

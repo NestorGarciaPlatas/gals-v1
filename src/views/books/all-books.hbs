@@ -1,35 +1,45 @@
 <style>
     h1 {
-			text-align: center;
-			margin-top: 50px;
-			font-size: 32px;
-			font-weight: bold;
-		}
+        text-align: center;
+        margin-top: 50px;
+        font-size: 32px;
+        font-weight: bold;
+    }
+
+    .btn-custom {
+        font-weight: 600;
+        border-radius: 25px;
+        transition: all 0.3s;
+    }
+
+    .btn-custom:hover {
+        transform: scale(1.1);
+    }
 </style>
-<h1>Administrador de los libros</h1>     
+<h1>Administrador de los libros</h1>
 <nav class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <i class="fas fa-cog"></i> Opciones de administrador
-  </button>
-  <ul class="dropdown-menu">
-    <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
-    <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>    
-    <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
-    <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
-    <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
-    <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
-  </ul>
+    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-cog"></i> Opciones de administrador
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/books"><i class="fas fa-book"></i> Libros</a></li>
+        <li><a class="dropdown-item" href="/users"><i class="fas fa-users"></i> Usuarios</a></li>
+        <li><a class="dropdown-item" href="/books/add"><i class="fas fa-plus"></i> Nuevo libro</a></li>
+        <li><a class="dropdown-item" href="/estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+        <li><a class="dropdown-item" href="/upload"><i class="fas fa-upload"></i> Actualización de curso</a></li>
+        <li><a class="dropdown-item" href="/users/signup"><i class="fas fa-user-plus"></i> Crear cuenta</a></li>
+    </ul>
 </nav>
 
 <p class="saltos p-1"></p>
 
 {{#if books}}
 <div class="btn-group mb-2" role="group" aria-label="Filtrar por curso">
-	  <button type="button" class="btn btn-secondary" onclick="filterBooks('all')">Todos</button>
-	  <button type="button" class="btn btn-secondary" onclick="filterBooks('1ESO')">1ESO</button>
-	  <button type="button" class="btn btn-secondary" onclick="filterBooks('2ESO')">2ESO</button>
-	  <button type="button" class="btn btn-secondary" onclick="filterBooks('3ESO')">3ESO</button>
-	  <button type="button" class="btn btn-secondary" onclick="filterBooks('4ESO')">4ESO</button>
+    <button type="button" class="btn btn-secondary" onclick="filterBooks('all')">Todos</button>
+    <button type="button" class="btn btn-secondary" onclick="filterBooks('1ESO')">1ESO</button>
+    <button type="button" class="btn btn-secondary" onclick="filterBooks('2ESO')">2ESO</button>
+    <button type="button" class="btn btn-secondary" onclick="filterBooks('3ESO')">3ESO</button>
+    <button type="button" class="btn btn-secondary" onclick="filterBooks('4ESO')">4ESO</button>
 </div>
 <p class="saltos p-1"></p>
 <form action="/books/demanda" method="post">
@@ -40,48 +50,59 @@
 
 {{/if}}
 
-<div class="row">    
+<div class="row">
     {{#each books}}
-	        <div class="col-md-3 p-2 book {{course}}">
-	            <div class="card">
-	                <img src="{{path}}" class="card-img-top p-2" height="160px" style="object-fit: cover"><!--style="max-width:225px;max-height:160px"-->
-	                <div class="card-body">
-	                    <h5 class="card-title d-flex justify-content-between align-items-center">
-	                        {{title}} <a href="/books/edit/{{_id}}"><i class="fas fa-edit"></i></a>
-	                    </h5>                    
-                    <p>{{isbn}}</p>
-                    <p>{{editorial}}</p>                    
-                    <p>{{stock}}</p>
-                    <p>{{course}}</p>
-                    <p>{{demand}}</p>
-                    <p>{{penalizacion}}€</p>
-                </div>
-                <div class="card-footer">
-                    <form action="/books/delete/{{_id}}?_method=DELETE" method="post">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button class="btn btn-danger btn-block btn-sm" type="submit">
-                            Eliminar
-                        </button>
-                    </form>
-                    <form action="/books/actualizarlibro/{{_id}}?_method=put" method="post">
-                        <input type="hidden" name="_method" value="put">
-                        <button class="btn btn-success btn-block btn-sm" type="submit">
-                            Actualizar
-                        </button>
-                    </form>
-                    <button type="button" class="btn  btn-info btn-sm" data-bs-toggle="popover" title="Actualización" style="display:inline"
-                        data-bs-content="La función actualizar añade ese libro a todos los usuarios, solo usar cuando añades un libro nuevo despues de actualizar la base de datos.">Info actualizar</button>
-                </div>
-            </div>
-        </div>
-    {{else}}
-        <div class="card , mx-auto">
+    <div class="col-md-3 p-2 book {{course}}">
+        <div class="card">
+            <img src="{{path}}" class="card-img-top p-2" height="160px"
+                style="object-fit: cover"><!--style="max-width:225px;max-height:160px"-->
             <div class="card-body">
-                <h1>Hola</h1>
-                <p class="lead">Aún no has añadio ningun libro.</p>
-                <a href="/books/add" class="btn btn-success btn-block"> Añadir libro!</a>
+                <h5 class="card-title d-flex justify-content-between align-items-center">
+                    {{title}} <a href="/books/edit/{{_id}}"><i class="fas fa-edit"></i></a>
+                </h5>
+                <p>{{isbn}}</p>
+                <p>{{editorial}}</p>
+                <p>{{stock}}</p>
+                <p>{{course}}</p>
+                <p>{{demand}}</p>
+                <p>{{penalizacion}}€</p>
             </div>
-        </div>    
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <form action="/books/delete/{{_id}}?_method=DELETE" method="post">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="btn btn-danger btn-sm px-4 btn-custom" type="submit">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center">
+                        <form action="/books/actualizarlibro/{{_id}}?_method=put" method="post">
+                            <input type="hidden" name="_method" value="put">
+                            <button type="submit" class="btn btn-success btn-sm px-3 btn-custom"
+                                data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right"
+                                data-bs-original-title="Actualizar"
+                                data-bs-content="La función actualizar añade ese libro a todos los usuarios, solo usar cuando añades un libro nuevo después de actualizar la base de datos."
+                                data-bs-trigger="hover">
+                                Añadir Libro
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    {{else}}
+    <div class="card , mx-auto">
+        <div class="card-body">
+            <h1>Hola</h1>
+            <p class="lead">Aún no has añadio ningun libro.</p>
+            <a href="/books/add" class="btn btn-success btn-block"> Añadir libro!</a>
+        </div>
+    </div>
     {{/each}}
 </div>
 <script>
@@ -98,7 +119,7 @@
             for (let i = 0; i < books.length; i++) {
                 books[i].style.display = 'none';
             }
-            
+
             // Show books with the selected course
             const courseBooks = document.getElementsByClassName(course);
             for (let i = 0; i < courseBooks.length; i++) {

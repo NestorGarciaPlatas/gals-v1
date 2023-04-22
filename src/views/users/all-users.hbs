@@ -40,7 +40,9 @@
 <p class="saltos p-1"></p>
 <div class="row">
     {{#each users}}
-        <div class="col-md-3 p-2 user {{course}}">
+        <!--<div class="col-md-3 p-2 user {{course}}">-->
+        <div class="col-md-3 p-2 user {{course}}" data-role="{{role}}">
+
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title d-flex justify-content-between align-items-center">
@@ -90,7 +92,9 @@ function filterUsers(course) {
         // Show users with the selected course
         const courseUsers = document.getElementsByClassName(course);
         for (let i = 0; i < courseUsers.length; i++) {
-            courseUsers[i].style.display = 'block';
+            if (courseUsers[i].getAttribute('data-role') === 'customer') {
+                courseUsers[i].style.display = 'block';
+            }
         }
     }
 }

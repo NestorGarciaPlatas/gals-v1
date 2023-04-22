@@ -1,38 +1,49 @@
 <div class="row">
     <h1>Libros de {{user.name}} para penalizar</h1>
     {{#each books}}
-        <div class="col-md-3 p-2">
-            <div class="card">
-                <img src="{{path}}" class="card-img-top p-2" height="160px" style="object-fit: cover">
-                <div class="card-body">
-                    <h4 class="card-title d-flex justify-content-between align-items-center">
-                        {{title}} 
-                    </h4>
-                    <p>{{isbn}}</p>
-                    <p>{{editorial}}</p>                    
-                    <p>{{course}}</p>
-                    <p>{{demand}}</p>
-                </div>
-                    <!--<p align="center">--> 
-                    <div class="card-footer">                       
-                        <form action="/users/penalty2/{{../user._id}}?_method=PUT" method="POST" style="display:inline" onclick="return confirm('¿Estás seguro de que quieres aplicar una penalización al libro de {{title}}?')">
-                            <input type="hidden" name="_method" value="PUT">
-                            <input type="hidden" name="idbook" value="{{_id}}">
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button class="btn btn-success btn-sm" type="submit" name="estado" value="NoRecibido">No recibido</button>
-                                <button class="btn btn-secondary btn-sm" type="submit" name="estado" value="MalEstado">En mal estado</button>
-                            </div>                        
-                        </form>
-                    </div>
-                    <!--</p>-->        
-                
+    <div class="col-md-3 p-2">
+        <div class="card">
+            <img src="{{path}}" class="card-img-top p-2" height="160px" style="object-fit: cover">
+            <div class="card-body">
+                <h4 class="card-title d-flex justify-content-between align-items-center">
+                    {{title}}
+                </h4>
+                <p>{{isbn}}</p>
+                <p>{{editorial}}</p>
+                <p>{{course}}</p>
+                <p>{{demand}}</p>
             </div>
-        </div> 
+            <!--<p align="center">-->
+            <div class="card-footer">
+                <form action="/users/penalty2/{{../user._id}}?_method=PUT" method="POST" style="display:inline"
+                    onclick="return confirm('¿Estás seguro de que quieres aplicar una penalización al libro de {{title}}?')">
+                    <input type="hidden" name="_method" value="PUT">
+                    <input type="hidden" name="idbook" value="{{_id}}">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <button class="btn btn-success btn-sm" type="submit" name="estado" value="NoRecibido">No
+                            recibido</button>
+                        <button class="btn btn-secondary btn-sm" type="submit" name="estado"
+                            value="MalEstado">Deteriorado</button>
+                        <button class="btn btn-primary btn-sm" type="submit" name="estado" value="Nopenalizado"
+                            data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top"
+                            data-bs-original-title="Sin sanción"
+                            data-bs-content="Este botón elimina la sanción del libro seleccionado."
+                            data-bs-trigger="hover">
+                            Sin sanción
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            <!--</p>-->
+
+        </div>
+    </div>
     {{/each}}
 </div>
 <style>
-.btn-group {
-  display: flex;
-  justify-content: center;
-}
+    .btn-group {
+        display: flex;
+        justify-content: center;
+    }
 </style>
