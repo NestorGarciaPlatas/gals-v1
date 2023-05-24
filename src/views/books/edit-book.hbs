@@ -7,11 +7,11 @@
             <form action="/books/edit-book/{{book._id}}?_method=PUT" method="POST">
                 <input type="hidden" name="_method" value="PUT">
                 <div class="form-group p-1">
-                    <label for="fname">Titulo:</label><br>
+                    <label for="fname">Título:</label><br>
                     <input type="text" name="title" class="form-control" placeholder="Title" value="{{book.title}}">
                 </div>
                 <div class="form-group p-1">
-                    <label for="fname">Isbn:</label><br>
+                    <label for="fname">ISBN:</label><br>
                     <input type="text" name="isbn" class="form-control" placeholder="Isbn" value="{{book.isbn}}">
                     <!--<textarea name="description" class="form-control" placeholder="Description"></textarea>-->
                 </div>

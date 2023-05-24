@@ -20,7 +20,7 @@ const Old = require('../models/Oldusers');
 
 router.get('/books/add', isAuthenticated, (req, res) => {
     if (req.user.role != 'admin') {
-        res.redirect('/notes');
+        console.log('no')
     } else {
         res.render('books/new-book');
     }
@@ -28,39 +28,39 @@ router.get('/books/add', isAuthenticated, (req, res) => {
 
 router.post('/books/new-book', uploadimage.single('image'), isAuthenticated, async (req, res) => {
     if (req.user.role != 'admin') {
-        res.redirect('/notes');
+        console.log('nooooo')
     }
     const { title, isbn, stock, course, demand, editorial, penalizacion } = req.body;
     const { filename, originalname, size, mimetype } = req.file;
     const errors = [];
 
     if (!title) {
-        errors.push({ text: 'Please Write a Title' });
+        errors.push({ text: 'Por favor escriba un título' });
     }
     if (!isbn) {
-        errors.push({ text: 'Please write an Isbn' });
+        errors.push({ text: 'Por favor escriba un ISBN' });
     }
     if (!editorial) {
-        errors.push({ text: 'Please write an Editorial' });
+        errors.push({ text: 'Por favor escriba un Editorial' });
     }
     if (!stock) {
-        errors.push({ text: 'Please write the Stock available' });
+        errors.push({ text: 'Por favor escriba el Stock disponible' });
     }
     if (!penalizacion) {
-        errors.push({ text: 'Please write the Penalization of the book' });
+        errors.push({ text: 'Por favor escribe la Penalización del libro' });
     }
     if (course == 'Select the course of the book:') {
-        errors.push({ text: 'Please, Select the course of the book.' });
+        errors.push({ text: 'Por favor, seleccione el curso del libro.' });
     }
     if (!demand) {
-        errors.push({ text: 'Please write the demand in case you do not know write 0' });
+        errors.push({ text: 'Por favor escriba la demanda en caso de no saber escriba 0' });
     }
 
     //console.log(req.file);
     if (errors.length > 0) {
         if (filename) {
             await unlink(path.resolve('./src/public/img/uploads/' + filename));
-            errors.push({ text: 'Upload again the photo' });
+            errors.push({ text: 'Sube de nuevo la foto' });
         }
         res.render('books/new-book', {
             errors,
@@ -75,28 +75,12 @@ router.post('/books/new-book', uploadimage.single('image'), isAuthenticated, asy
         const path = '/img/uploads/' + filename;
         const newBook = new Book({ title, isbn, stock, course, demand, editorial, penalizacion, filename, path, originalname, size, mimetype });
         await newBook.save();
-        req.flash('success_msg', 'Book agregada successfully');
+        req.flash('success_msg', 'Libro agregado con éxito');
         res.redirect('/books');
     }
 
 });
 
-router.post('/books/search', isAuthenticated, async (req, res) => {
-
-    const { search } = req.body;
-    var books = await Book.find({ isbn: search }).sort({ date: 'desc' }).lean();
-    const errors = [];
-    const x = books.length;
-    if (books.length == 0) {
-        errors.push({ text: 'There is no ISBN like the one you have typed in the database, type it all in or check if you have typed it correctly.' });
-        books = await Book.find().sort({ date: 'desc' }).lean();
-    }
-    if (req.user.role == 'admin') {
-        res.render('books/all-books', { errors, books });
-    } else {
-        res.render('books/the-books-order', { errors, books });
-    }
-});
 //TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 router.post('/searchinfo', isAuthenticated, async (req, res) => {
     const { campo1, campo2, course, campo3} = req.body;
@@ -203,103 +187,107 @@ router.post('/searchinfo', isAuthenticated, async (req, res) => {
 })
 
 router.get('/estadisticas', isAuthenticated, async (req, res) => {
-    const stats = {};
+    if (req.user.role == 'admin') {
+        const stats = {};
 
-    // Total de libros
-    const totalBooks = await Book.countDocuments();
-    stats.totalBooks = totalBooks;
+        // Total de libros
+        const totalBooks = await Book.countDocuments();
+        stats.totalBooks = totalBooks;
 
-    // Total de libros por curso
-    const booksByCourse = await Book.aggregate([
-    {
-        $group: {
-        _id: '$course',
-        count: { $sum: 1 }
-        }
-    },
-    {
-        $sort: {
-            _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
-        }
-    }
-    ]);
-    stats.booksByCourse = booksByCourse;
+        // Total de libros por curso
+        const booksByCourse = await Book.aggregate([
+            {
+                $group: {
+                    _id: '$course',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
+                }
+            }
+        ]);
+        stats.booksByCourse = booksByCourse;
 
-    // Total de alumnos
-    const totalStudents = await User.countDocuments({
-        adminpermision: true,
-        subscription: true,
-        role: 'customer'
-    });
-    stats.totalStudents = totalStudents;
-
-    // Total de alumnos por curso
-    const studentsByCourse = await User.aggregate([
-        {
-          $match: {
+        // Total de alumnos
+        const totalStudents = await User.countDocuments({
+            adminpermision: true,
             subscription: true,
-            adminpermision: true
-          }
-        },
-        {
-          $group: {
-            _id: '$course',
-            count: { $sum: 1 }
-          }
-        },
-        {
-            $sort: {
-                _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
-            }
-        }
-      ]);
-      stats.studentsByCourse = studentsByCourse;
-      
+            role: 'customer'
+        });
+        stats.totalStudents = totalStudents;
 
-    // Dinero recaudado por año
-    const revenueByYear = await User.aggregate([
-    {
-        $unwind: '$entregado'
-    },
-    {
-        $group: {
-        _id: '$entregado.year',
-        revenue: { $sum: '$entregado.price' }
-        }
-    },
-    {
-        $sort: {
-            _id: 1 // Ordenar por el campo _id (año) en orden ascendente
-        }
-    }
-    ]);
-    stats.revenueByYear = revenueByYear;
-    // Cantidad de penalizaciones por curso
-    const penalizationsByCourse = await User.aggregate([
-        {
-            $unwind: "$entregado"
-          },
-        {
-          $match: {
-            "entregado.estado": { $in: ["MalEstado", "NoRecibido"] }
-          }
-        },
-        {
-          $group: {
-            _id: "$entregado.course",
-            count: { $sum: 1 }
-          }
-        },
-        {
-            $sort: {
-                _id: 1 // Ordenar por el campo _id (año) en orden ascendente
+        // Total de alumnos por curso
+        const studentsByCourse = await User.aggregate([
+            {
+                $match: {
+                    subscription: true,
+                    adminpermision: true
+                }
+            },
+            {
+                $group: {
+                    _id: '$course',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1 // Ordenar por el campo _id (curso) en orden ascendente
+                }
             }
-        }
-      ]);
-      stats.penalizationsByCourse = penalizationsByCourse;
-    console.log(stats);
-    // Aquí iría el código para obtener las estadísticas
-    res.render('statistics/general-stats', { stats });
+        ]);
+        stats.studentsByCourse = studentsByCourse;
+        
+
+        // Dinero recaudado por año
+        const revenueByYear = await User.aggregate([
+            {
+                $unwind: '$entregado'
+            },
+            {
+                $group: {
+                    _id: '$entregado.year',
+                    revenue: { $sum: '$entregado.price' }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1 // Ordenar por el campo _id (año) en orden ascendente
+                }
+            }
+        ]);
+        stats.revenueByYear = revenueByYear;
+        // Cantidad de penalizaciones por curso
+        const penalizationsByCourse = await User.aggregate([
+            {
+                $unwind: "$entregado"
+            },
+            {
+                $match: {
+                    "entregado.estado": { $in: ["MalEstado", "NoRecibido"] }
+                }
+            },
+            {
+                $group: {
+                    _id: "$entregado.course",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: {
+                    _id: 1 // Ordenar por el campo _id (año) en orden ascendente
+                }
+            }
+        ]);
+        stats.penalizationsByCourse = penalizationsByCourse;
+        console.log(stats);
+        // Aquí iría el código para obtener las estadísticas
+        res.render('statistics/general-stats', { stats });
+    } else {
+        console.log('noo')
+    }
   });
   
 //TODO ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -369,7 +357,7 @@ router.put('/books/petitions/:id', isAuthenticated, async (req, res) => {
 
     await User.findByIdAndUpdate(req.params.id, { car, subscription });
     const users = await User.find({ subscription: false, adminpermision: true }).sort({ date: 'desc' }).lean();
-    success_mssg.push({ text: 'Petition process successfully' });
+    success_mssg.push({ text: 'Proceso de petición con éxito' });
     //req.flash('success_msg', 'Petition process successfully');
     res.render('users/petitions', { users, success_mssg });
 });
@@ -390,7 +378,7 @@ router.post('/books/allpetitions', isAuthenticated, async (req, res) => {
 
         await User.findByIdAndUpdate(users._id, { car, subscription });
     });
-    success_mssg.push({ text: 'Petition process successfully' });
+    success_mssg.push({ text: 'Proceso de petición con éxito' });
     //req.flash('success_msg', 'Petition process successfully');
     res.render('users/petitions', { success_mssg });
 });
@@ -398,26 +386,19 @@ router.post('/books/allpetitions', isAuthenticated, async (req, res) => {
 router.post('/books/demanda', isAuthenticated, async (req, res) => {
     const success_mssg = [];
 
-    /*const count4 = await User.countDocuments({ subscription: true, adminpermision: true, course: "4ESO" });
-    const count3 = await User.countDocuments({ subscription: true, adminpermision: true, course: "3ESO" });
-    const count2 = await User.countDocuments({ subscription: true, adminpermision: true, course: "2ESO" });
-    const count1 = await User.countDocuments({ subscription: true, adminpermision: true, course: "1ESO" });*/
 
     const courses = User.aggregate([
         { $match: { subscription: true, adminpermision: true } },
         { $group: { _id: "$course", count: { $count: {} } } }
     ]
     ).cursor();
-    //courses = JSON.parse(courses);
-    //console.log(courses);
+    
     dict = {};
     for await (const item of courses) {
         console.log(item._id + " " + item.count + "-----");
         dict[item._id] = item.count;  
     }
-    /*courses.foreach(function (item) {
-        dict[item._id] = item.count;
-    });*/
+    
     const books = await Book.find().sort({ course: 'desc' }).lean();
     var promises = books.map(function (book) {
         // Código del for each
@@ -425,74 +406,14 @@ router.post('/books/demanda', isAuthenticated, async (req, res) => {
         console.log(book.course);
         console.log(dict[book.course]);
         return Book.findByIdAndUpdate(book._id, {"demand": dict[book.course] });
-        /*switch (book.course) {
-            case '4ESO':
-                var demand = count4;
-                console.log(book.title + " " + demand + "-----");
-                return Book.findByIdAndUpdate(book._id, { "demand": demand });
-                break;
-            case '3ESO':
-                var demand = count3;
-                return Book.findByIdAndUpdate(book._id, { demand });
-                break;
-            case '2ESO':
-                var demand = count2;
-                return Book.findByIdAndUpdate(book._id, { demand });
-                break;
-            case '1ESO':
-                var demand = count1;
-                return Book.findByIdAndUpdate(book._id, { demand });
-                break;
-        }*/
+        
     });
 
     Promise.all(promises).then(() => {
-        // Código después del for-each
-        /*console.log("4ESO: " + count4);
-        console.log("3ESO: " + count3);
-        console.log("2ESO: " + count2);
-        console.log("1ESO: " + count1);*/
-
         req.flash('success_msg', 'Se ha actualizado la demanda');
         res.redirect('/books');
     });
-    /*books.forEach(async function (book) {
-        switch (book.course) {
-            case '4ESO':
-                var demand = count4;
-                console.log(book.title + " " + demand + "-----");
-                await Book.findByIdAndUpdate(book._id, { "demand": demand });/*,
-                function (err, docs) {
-                    if (err) {
-                        console.log(err)
-                    }
-                    else {
-                        console.log("Updated User : ", docs);
-                    }
-                
-                break;
-            case '3ESO':
-                var demand = count3;
-                await Book.findByIdAndUpdate(book._id, { demand });
-                break;
-            case '2ESO':
-                var demand = count2;
-                await Book.findByIdAndUpdate(book._id, { demand });
-                break;
-            case '1ESO':
-                var demand = count1;
-                await Book.findByIdAndUpdate(book._id, { demand });
-                break;
-        }
-    });*/
-
-    /*console.log("4ESO: " + count4);
-    console.log("3ESO: " + count3);
-    console.log("2ESO: " + count2);
-    console.log("1ESO: " + count1);
-
-    req.flash('success_msg', 'Se ha actualizado la demanda');
-    res.redirect('/books');*/
+    
 });
 
 router.get('/statistics', isAuthenticated, async (req, res) => {
@@ -577,13 +498,7 @@ router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) 
         var cont4 = 0, cont3 = 0, cont2 = 0, cont1 = 0, total = 0, per1 = 0, per2 = 0, per3 = 0, per4;
         const fecha = new Date(); // crea un objeto Date con la fecha y hora actuales
         const anioActual = fecha.getFullYear();
-        /*const users = await User.find({
-            subscription: true,
-            adminpermision: true,
-            entregado: {
-              $elemMatch: { year: anioActual }
-            }
-        }).sort({ course: 'desc' }).lean();*/
+        
         const users = await User.aggregate([
             // Filtrar los documentos por el año actual en entregado
             { $match: {
@@ -646,16 +561,11 @@ router.get('/statistics/studentspenalizados', isAuthenticated, async (req, res) 
     }
 });
 
-router.get('/books/donation', isAuthenticated, async (req, res) => {
-    const books = await Book.find().sort({ course: 'desc' }).lean();
-    res.render('books/the-books-donation', { books });
-
-});
 
 router.post('/books/subscribe', isAuthenticated, async (req, res) => {
     const books = await Book.find({ course: req.user.course }).sort({ date: 'desc' }).lean();
     if (req.user.adminpermision == true && req.user.subscription == true) {
-        req.flash('success_msg', 'You are now subcribed');
+        req.flash('success_msg', 'Ahora estás suscrito');
         res.render('books/subscribe', { books });
     } else if (req.user.adminpermision == true && req.user.subscription == false) {
         sub = req.user.adminpermision;
@@ -664,125 +574,9 @@ router.post('/books/subscribe', isAuthenticated, async (req, res) => {
         adminpermision = true;
         sub = adminpermision;
         await User.findByIdAndUpdate(req.user.id, { adminpermision });
-        req.flash('success_msg', 'You are now subcribed');
+        req.flash('success_msg', 'Ahora estás suscrito');
         res.render('books/subscribe', { sub });
     }
-});
-
-router.put('/books/donation/:id', isAuthenticated, async (req, res) => {
-    const book = await Book.findById(req.params.id).lean();
-    const { nota } = req.body;
-    const stock = book.stock + 1;
-    const errors = [];
-    const donation = [{
-        isbn: book.isbn,
-        nota: nota,
-    }];
-    var isbnDonation = false;
-    const usuario = await User.findById(req.user.id);
-    const don = usuario.donation;
-    don.forEach(function (don) {
-        if (book.isbn == don.isbn) {
-            isbnDonation = true;
-        }
-    });
-    if (isbnDonation) {
-        errors.push({ text: 'No puedes donar el mismo libro 2 veces' });
-        const books = await Book.find().sort({ date: 'desc' }).lean();
-        res.render('books/the-books-donation', { errors, books });
-    } else {
-        const donation2 = usuario.donation;
-        donation.push.apply(donation, donation2);
-        await Book.findByIdAndUpdate(req.params.id, { stock });
-        await User.findByIdAndUpdate(req.user.id, { donation });
-        req.flash('success_msg', 'Book donated satisfactoriamente');
-        res.redirect('/books/donation')
-    }
-
-});
-
-router.put('/books/order/:id', isAuthenticated, async (req, res) => {
-    const book = await Book.findById(req.params.id).lean();
-    const demand = book.demand + 1;
-    const errors = [];
-    const car = [book.isbn];
-    const usuario = await User.findById(req.user.id);
-    const isbnCar = usuario.car.includes(book.isbn);
-    //console.log(isbnCar);
-    if (book.course != req.user.course) {
-        errors.push({ text: 'No puedes agregar este libro ya que etsas en otro curso' });
-    }
-    if (isbnCar) {
-        errors.push({ text: 'No puedes agregar mas de 1 libro' });
-    }
-    if (errors.length > 0) {
-        const books = await Book.find({ course: req.user.course }).sort({ date: 'desc' }).lean();
-        res.render('books/the-books-order', { errors, books });
-    } else {
-        const car2 = usuario.car;
-        car.push.apply(car, car2);
-        await Book.findByIdAndUpdate(req.params.id, { demand });
-        await User.findByIdAndUpdate(req.user.id, { car });
-        req.flash('success_msg', 'Book added satisfactoriamente');
-        res.redirect('/books')
-    }
-
-});
-
-router.put('/books/orderdelete/:id', isAuthenticated, async (req, res) => {
-    const book = await Book.findById(req.params.id).lean();
-    const demand = book.demand - 1;
-    var car = [];
-    var car2 = req.user.car;
-    await Book.findByIdAndUpdate(req.params.id, { demand });
-    //eliminar el isbn de car        
-    car2.forEach(async function (car2) {
-        if (car2 != book.isbn) {
-            car.push(car2);
-        }
-    });
-    await User.findByIdAndUpdate(req.user.id, { car });
-    req.flash('success_msg', 'Book delited satisfactoriamente');
-    res.redirect('/books/ordercar');
-});
-
-router.put('/books/donationdelete/:id', isAuthenticated, async (req, res) => {
-    const book = await Book.findById(req.params.id).lean();
-    const stock = book.stock - 1;
-    var donation = [];
-    var donation2 = req.user.donation;
-    await Book.findByIdAndUpdate(req.params.id, { stock });
-    //eliminar el isbn de donation        
-    donation2.forEach(async function (donation2) {
-        if (donation2.isbn != book.isbn) {
-            donation.push(donation2);
-        }
-    });
-    await User.findByIdAndUpdate(req.user.id, { donation });
-    req.flash('success_msg', 'Book delited satisfactoriamente');
-    res.redirect('/books/mydonation');
-});
-
-router.get('/books/ordercar', isAuthenticated, async (req, res) => {
-    const car = req.user.car;
-    var books = [];
-    var libro = [];
-    car.forEach(async function (car) {
-        libro = await Book.find({ isbn: car }).sort({ date: 'desc' }).lean();
-        books.push.apply(books, libro);
-    });
-    res.render('books/order-books', { books });
-});
-
-router.get('/books/mydonation', isAuthenticated, async (req, res) => {
-    const donation = req.user.donation;
-    var books = [];
-    var libro = [];
-    donation.forEach(async function (donation) {
-        libro = await Book.find({ isbn: donation.isbn }).sort({ date: 'desc' }).lean();
-        books.push.apply(books, libro);
-    });
-    res.render('books/donation-books', { books });
 });
 
 router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
@@ -793,7 +587,7 @@ router.get('/books/edit/:id', isAuthenticated, async (req, res) => {
 router.put('/books/edit-book/:id', isAuthenticated, async (req, res) => {
     const { title, isbn, stock, course, demand, editorial, penalizacion } = req.body;
     await Book.findByIdAndUpdate(req.params.id, { title, isbn, stock, course, demand, editorial, penalizacion });
-    req.flash('success_msg', 'Book actualizada satisfactoriamente');
+    req.flash('success_msg', 'Libro actualizado correctamente');
     res.redirect('/books')
 });
 
@@ -824,7 +618,7 @@ router.delete('/books/delete/:id', isAuthenticated, async (req, res) => {
     );
     const image = await Book.findByIdAndDelete(req.params.id);
     await unlink(path.resolve('./src/public' + image.path));
-    req.flash('success_msg', 'Book delited satisfactoriamente');
+    req.flash('success_msg', 'Libro eliminado satisfactoriamente');
     res.redirect('/books');
 });
 
